@@ -73,7 +73,7 @@ h3,
 p, li, code
 { font-size: medium; }
 th, td
-{ font-size: large; }
+{ font-size: medium; }
 .h2btn
-{ font-size: smaller; }
+{ font-size: medium; }
 }
