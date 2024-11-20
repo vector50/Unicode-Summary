@@ -2476,7 +2476,7 @@
     <p>
         On Windows, you can use wide characters and wide print functions to print Unicode text. You will also need to use
         <a target="_blank" href="https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/setmode?view=msvc-170">the "_setmode" function</a>
-        to set the output mode to Unicode, otherwise only ASCII will be printed:
+        to set the output mode to Unicode, otherwise only ASCII characters will be printed:
     </p>
 
     <pre><code class="language-c">
@@ -2491,13 +2491,7 @@ int main()
 }            
     </code></pre>
 
-    <p>
-        Please note that the arabic text will be printed in a left-to-right direction without forming ligatures.
-
-        <br><br>
-
-        On Linux UNWRITTEN
-    </p>
+    <p>Please note that the arabic text will be printed in a left-to-right direction without forming ligatures.</p>
 
 
 
@@ -2553,19 +2547,17 @@ int main()
 #include &lt;stdio.h&gt;
 #include &lt;stdint.h&gt;
 
-uint8_t utf32ToUtf8(uint32_t codePoint, uint8_t output[5])
+uint8_t utf32ToUtf8(uint32_t codePoint, uint8_t output[4])
 {
     if (codePoint &lt;= 0x007F) // Fits into one UTF8 code unit (ASCII)
     {
         output[0] = (uint8_t) codePoint;
-        output[1] = '\0';
         return 1;
     }
     else if (codePoint &lt;= 0x07FF) // Fits into two UTF8 code units
     {
         output[0] = (uint8_t) (((codePoint &gt;&gt; 6) & 0b0011111) | 0b11000000);
         output[1] = (uint8_t) ((codePoint & 0b0111111) | 0b10000000);
-        output[2] = '\0';
         return 2;
     }
     else if (codePoint &lt;= 0xFFFF) // Fits into three UTF8 code units
@@ -2573,7 +2565,6 @@ uint8_t utf32ToUtf8(uint32_t codePoint, uint8_t output[5])
         output[0] = (uint8_t) (((codePoint &gt;&gt; 12) & 0b00001111) | 0b11100000);
         output[1] = (uint8_t) (((codePoint &gt;&gt; 6) & 0b00111111) | 0b10000000);
         output[2] = (uint8_t) ((codePoint & 0b00111111) | 0b10000000);
-        output[3] = '\0';
         return 3;
     }
     else if (codePoint &lt;= 0x10FFFF) // Fits into four UTF8 code units
@@ -2582,19 +2573,14 @@ uint8_t utf32ToUtf8(uint32_t codePoint, uint8_t output[5])
         output[1] = (uint8_t) (((codePoint &gt;&gt; 12) & 0b00111111) | 0b10000000);
         output[2] = (uint8_t) (((codePoint &gt;&gt; 6) & 0b00111111) | 0b10000000);
         output[3] = (uint8_t) ((codePoint & 0b00111111) | 0b10000000);
-        output[4] = '\0';
         return 4;
     }
-    else
-    {
-        output[0] = '\0';
-        return UINT8_MAX; // We will consider the return value "UINT8_MAX" (255) to mean "invalid"
-    }
+    else return UINT8_MAX; // We will consider the return value "UINT8_MAX" (255) to mean "invalid"
 }
 
 int main()
 {
-    uint8_t output[5] = {0};
+    uint8_t output[4] = {0};
     uint8_t codeUnitCount = utf32ToUtf8(0x1D70F, output); // The character U+1D70F is "Mathematical Italic Small Tau" "𝜏"
 
     printf("Amount of code units: %d\n", codeUnitCount);
@@ -2680,14 +2666,17 @@ uint32_t utf8ToUtf32(const uint8_t utf8Char[4])
     }
     else if ((utf8Char[0] & 0b11100000) == 0b11000000) // Two code units
     {
-        if (utf8Char[1] == '\0') return UINT32_MAX; // We will consider the return value "UINT32_MAX" (0xFFFFFFFF) to mean "invalid"
+        if ((utf8Char[1] & 0b11000000) != 0b10000000) // Check if the next unit is valid
+            return UINT32_MAX; // We will consider the return value "UINT32_MAX" (0xFFFFFFFF) to mean "invalid"
 
         return ((uint32_t)(utf8Char[0] & 0b00011111) &lt;&lt; 6) +
                 (uint32_t)(utf8Char[1] & 0b00111111);
     }
     else if ((utf8Char[0] & 0b11110000) == 0b11100000) // Three code units
     {
-        if (utf8Char[1] == '\0' || utf8Char[2] == '\0') return UINT32_MAX;
+        if ((utf8Char[1] & 0b11000000) != 0b10000000
+            || (utf8Char[2] & 0b11000000) != 0b10000000) // Check if the next units are valid
+                return UINT32_MAX;
         
         return ((uint32_t)(utf8Char[0] & 0b00001111) &lt;&lt; 12) +
                 ((uint32_t)(utf8Char[1] & 0b00111111) &lt;&lt; 6) +
@@ -2695,7 +2684,10 @@ uint32_t utf8ToUtf32(const uint8_t utf8Char[4])
     }
     else if ((utf8Char[0] & 0b11111000) == 0b11110000) // Four code units
     {
-        if (utf8Char[1] == '\0' || utf8Char[2] == '\0' || utf8Char[3] == '\0') return UINT32_MAX;
+        if ((utf8Char[1] & 0b11000000) != 0b10000000 // Check if the next units are valid
+            || (utf8Char[2] & 0b11000000) != 0b10000000
+            || (utf8Char[3] & 0b11000000) != 0b10000000)
+                return UINT32_MAX;
 
         return ((uint32_t)(utf8Char[0] & 0b00000111) &lt;&lt; 18) +
             ((uint32_t)(utf8Char[1] & 0b00111111) &lt;&lt; 12) +
@@ -2706,7 +2698,7 @@ uint32_t utf8ToUtf32(const uint8_t utf8Char[4])
 
 int main()
 {
-    uint8_t codeUnits[5] = {0xD0, 0x87, '\0'}; // The character (U+0407) is "Cyrillic Capital Letter Yi" "ї"
+    uint8_t codeUnits[4] = {0xD0, 0x87}; // The character (U+0407) is "Cyrillic Capital Letter Yi" "ї"
     printf("%X\n", utf8ToUtf32(codeUnits));
     return 0;
 }
@@ -2775,11 +2767,11 @@ int main()
         If the code point's value is in the BMP (less than 65,536 (0x10000))
         it simply gets converted to an unsigned 16-bit integer with the same value as that code point.
         <br>
-        However, if it isn't in the BMP (greater or equal to 65,536 (0x10000)):
+        However, if it isn't in the BMP (greater than or equal to 65,536 (0x10000)):
     </p>
 
     <ul>
-        <li>0x10000 is subtracted from the code point, leaving a 20-bit number in the hexadecimal number range 0x00000 to 0xFFFFF.</li>
+        <li>0x10000 is subtracted from the code point, leaving a 20-bit number in the range 0x00000 to 0xFFFFF.</li>
         <li>
             The high ten bits (value ranging from 0x000 to 0x3FF) are added to 0xD800
             to get the first 16-bit code unit (high surrogate), which will be in the range 0xD800 to 0xDBFF.
@@ -2790,12 +2782,12 @@ int main()
         </li>
     </ul>
 
-    <p>A visual illustration of this looks like:</p>
+    <p>A visual illustration of this looks like this:</p>
 
     <ul>
-        <li>Subtraction result = code point - 0x10000 = yyyyyyyyyyxxxxxxxxxx</li>
-        <li>High surrogate = 0xD800 + yyyyyyyyyy = 110110yyyyyyyyyy</li>
-        <li>Low surrogate = 0xDC00 + xxxxxxxxxx = 110111xxxxxxxxxx</li>
+        <li>Code point - 0x10000 = yyyyyyyyyyxxxxxxxxxx₂</li>
+        <li>High surrogate = 0xD800 + yyyyyyyyyy₂ = 110110yyyyyyyyyy₂</li>
+        <li>Low surrogate = 0xDC00 + xxxxxxxxxx₂ = 110111xxxxxxxxxx₂</li>
     </ul>
 
     <pre><code class="language-c">
@@ -2836,7 +2828,7 @@ int main()
 
     <p>
         The output is [D800, DC01].
-        In binary [<span class="lightBlueUnderline">110110</span>0000000000, <span class="lightBlueUnderline">110111</span>0000000001]
+        In binary [<span class="lightBlueUnderline">110110</span>0000000000, <span class="lightBlueUnderline">110111</span>0000000001].
     </p>
 
 
@@ -2908,7 +2900,8 @@ uint8_t utf8ToUtf16(const uint8_t utf8Char[4], uint16_t output[2])
     }
     else if ((utf8Char[0] & 0b11100000) == 0b11000000) // Two code units
     {
-        if (utf8Char[1] == '\0') return UINT8_MAX; // We will consider the return value "UINT8_MAX" (255) to mean "invalid"
+        if ((utf8Char[1] & 0b11000000) != 0b10000000) // Check if the next unit is valid
+            return UINT8_MAX; // We will consider the return value "UINT8_MAX" (255) to mean "invalid"
 
         output[0] = ((uint16_t)(utf8Char[0] & 0b00011111) &lt;&lt; 6) +
                 (uint16_t)(utf8Char[1] & 0b00111111);
@@ -2916,7 +2909,9 @@ uint8_t utf8ToUtf16(const uint8_t utf8Char[4], uint16_t output[2])
     }
     else if ((utf8Char[0] & 0b11110000) == 0b11100000) // Three code units
     {
-        if (utf8Char[1] == '\0' || utf8Char[2] == '\0') return UINT8_MAX;
+        if ((utf8Char[1] & 0b11000000) != 0b10000000
+            || (utf8Char[2] & 0b11000000) != 0b10000000) // Check if the next units are valid
+                return UINT8_MAX;
         
         output[0] = ((uint16_t)(utf8Char[0] & 0b00001111) &lt;&lt; 12) +
                 ((uint16_t)(utf8Char[1] & 0b00111111) &lt;&lt; 6) +
@@ -2925,7 +2920,10 @@ uint8_t utf8ToUtf16(const uint8_t utf8Char[4], uint16_t output[2])
     }
     else if ((utf8Char[0] & 0b11111000) == 0b11110000) // Four code units
     {
-        if (utf8Char[1] == '\0' || utf8Char[2] == '\0' || utf8Char[3] == '\0') return UINT8_MAX;
+        if ((utf8Char[1] & 0b11000000) != 0b10000000 // Check if the next units are valid
+            || (utf8Char[2] & 0b11000000) != 0b10000000
+            || (utf8Char[3] & 0b11000000) != 0b10000000)
+                return UINT8_MAX;
 
         uint32_t result = ((uint32_t)(utf8Char[0] & 0b00000111) &lt;&lt; 18) +
                             ((uint32_t)(utf8Char[1] & 0b00111111) &lt;&lt; 12) +
@@ -2940,7 +2938,7 @@ uint8_t utf8ToUtf16(const uint8_t utf8Char[4], uint16_t output[2])
 
 int main()
 {
-    uint8_t codeUnits[5] = {0xF0, 0x90, 0xA4, 0x87, '\0'}; // The character (U+10907) is "Phoenician Letter Het" "𐤇"
+    uint8_t codeUnits[4] = {0xF0, 0x90, 0xA4, 0x87}; // The character (U+10907) is "Phoenician Letter Het" "𐤇"
     uint16_t output[2] = {0};
     
     uint8_t codeUnitCount = utf8ToUtf16(codeUnits, output);
@@ -2968,12 +2966,12 @@ int main()
 #include &lt;stdio.h&gt;
 #include &lt;stdint.h&gt;
 
-uint8_t utf16ToUtf8(uint16_t utf16Char[2], uint8_t output[5])
+uint8_t utf16ToUtf8(uint16_t utf16Char[2], uint8_t output[4])
 {
     // High surrogate
     if (utf16Char[0] >= 0xD800 && utf16Char[0] &lt;= 0xDBFF)
     {
-        if (utf16Char[1] &lt; 0xDC00 || utf16Char[1] > 0xDFFF) // The next unit is a low surrogate
+        if (utf16Char[1] &lt; 0xDC00 || utf16Char[1] > 0xDFFF) // Make sure the next unit is a low surrogate
             return UINT8_MAX; // We will consider the return value "UINT8_MAX" (255) to mean "invalid"
 
         uint32_t result = ( ((uint32_t)(utf16Char[0] & 0b1111111111)) &lt;&lt; 10 ) + (uint32_t)(utf16Char[1] & 0b1111111111) + 0x10000U;
@@ -2981,7 +2979,6 @@ uint8_t utf16ToUtf8(uint16_t utf16Char[2], uint8_t output[5])
         output[1] = (uint8_t) (((result >> 12) & 0b00111111) | 0b10000000);
         output[2] = (uint8_t) (((result >> 6) & 0b00111111) | 0b10000000);
         output[3] = (uint8_t) ((result & 0b00111111) | 0b10000000);
-        output[4] = '\0';
         return 4;
     }
     // The unit isn't a low surrogate, and is in the BMP
@@ -2990,14 +2987,12 @@ uint8_t utf16ToUtf8(uint16_t utf16Char[2], uint8_t output[5])
         if (utf16Char[0] &lt;= 0x007F) // Fits into one UTF8 code unit (ASCII)
         {
             output[0] = (uint8_t) utf16Char[0];
-            output[1] = '\0';
             return 1;
         }
         else if (utf16Char[0] &lt;= 0x07FF) // Fits into two UTF8 code units
         {
             output[0] = (uint8_t) (((utf16Char[0] >> 6) & 0b0011111) | 0b11000000);
             output[1] = (uint8_t) ((utf16Char[0] & 0b0111111) | 0b10000000);
-            output[2] = '\0';
             return 2;
         }
         else if (utf16Char[0] &lt;= 0xFFFF) // Fits into three UTF8 code units
@@ -3005,21 +3000,16 @@ uint8_t utf16ToUtf8(uint16_t utf16Char[2], uint8_t output[5])
             output[0] = (uint8_t) (((utf16Char[0] >> 12) & 0b00001111) | 0b11100000);
             output[1] = (uint8_t) (((utf16Char[0] >> 6) & 0b00111111) | 0b10000000);
             output[2] = (uint8_t) ((utf16Char[0] & 0b00111111) | 0b10000000);
-            output[3] = '\0';
             return 3;
         }
     }
-    else
-    {
-        output[0] = '\0';
-        return UINT8_MAX;
-    }
+    else return UINT8_MAX;
 }
 
 int main()
 {
     uint16_t codeUnits[2] = {0xD801, 0xDE43}; // The character (U+10643) is "Linear A Sign Ab082" "𐙃"
-    uint8_t output[5] = {0};
+    uint8_t output[4] = {0};
     
     uint8_t codeUnitCount = utf16ToUtf8(codeUnits, output);
     printf("Amount of code units: %d\n", codeUnitCount);
@@ -3032,7 +3022,7 @@ int main()
 }    
     </code></pre>
 
-    <p>The output is [0xF0, 0x90, 0x99, 0x83]</p>
+    <p>The output is [0xF0, 0x90, 0x99, 0x83].</p>
 
     
 
