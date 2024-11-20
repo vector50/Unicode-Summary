@@ -1,0 +1,3120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unicode Summary</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+</head>
+
+
+
+<body>
+    <h1>A Summary of Unicode</h1>
+
+    <h2>
+        Index
+        <button class="h2btn" onclick="copyURL('')">#</button>
+    </h2>
+
+    <ul>
+        <li><a href="#what_is_unicode">What is Unicode</a></li>
+        <li><a href="#design_and_terminology">Design and terminology</a></li>
+        <li><a href="#unique_blocks_in_unicode">Unique blocks in Unicode</a></li>
+        <li><a href="#encodings">Encodings</a></li>
+        <li><a href="#unique_characters">Unique characters</a></li>
+        <li><a href="#character_properties">Character properties</a></li>
+        <li><a href="#bidi_text">Bidirectional text</a></li>
+        <li><a href="#the_unicode_collation_algorithm">The Unicode collation algorithm</a></li>
+        <li><a href="#unicode_equivalence">Unicode equivalence</a></li>
+        <li><a href="#implementing_unicode_support">Implementing Unicode support in your code</a></li>
+        <li><a href="#sources">Sources</a></li>
+        <li><a href="#bottom">Bottom</a></li>
+    </ul>
+    
+
+
+
+
+    <h2 id="what_is_unicode">
+        What is Unicode
+        <button class="h2btn" onclick="copyURL('what_is_unicode')">#</button>
+    </h2>
+
+    <p>
+        Unicode is a text encoding standard maintained by the Unicode Consortium, Designed to support the use of text in all of the world's writing systems that can be digitized.
+        <br>
+        Version 16.0 of the standard (the latest at the time of writing) defines 154998 characters and 168 scripts.
+    </p>
+
+
+
+
+
+    <h2 id="design_and_terminology">
+        Design and terminology
+        <button class="h2btn" onclick="copyURL('design_and_terminology')">#</button>
+    </h2>
+
+    <h3>Scripts</h3>
+
+    <p>
+        A script in Unicode is a collection of characters from one or more writing systems or languages.
+    </p>
+
+    <ul>
+        <li>Some scripts support one and only one writing system and language, for example, Armenian.</li>
+        <li>Other scripts support many different writing systems; for example, the Latin script supports English, French, German, Italian, Vietnamese, Latin, and other languages.</li>
+        <li>Some languages make use of multiple writing systems and several scripts; for example, in Turkish, the Arabic script was used before the 20th century but transitioned to Latin in the early part of the 20th century.</li>
+    </ul>
+
+    <p>
+        Here is a <a target=”_blank” href="https://www.unicode.org/standard/supported.html">list of supported scripts</a>.
+    </p>
+    
+
+
+    <h3>UTF</h3>
+
+    <p>
+        The Unicode standard defines three encodings: UTF-8, UTF-16, and UTF-32, though other encodings exist as well.
+        <br>
+        "UTF" stands for "Unicode Transformation Format".
+    </p>
+
+
+
+    <h3>Code points</h3>
+    
+    <p>
+        A code point is a numerical value that maps to a specific character. For example, in ASCII the code point 65 (in decimal) represents uppercase "A".
+    </p>
+    
+
+
+    <h3>Code point representation</h3>
+
+    <p>
+        In Unicode, a code point can be referred to as "U+"" followed by its value in hexadecimal.
+        <br>
+        Examples:
+    </p>
+
+    <table>
+        <tr>
+            <th>Character</th>
+            <th>Code point</th>
+            <th>Glyph</th>
+        </tr>
+        <tr>
+            <td>Latin A</td>
+            <td>U+0041</td>
+            <td>A</td>
+        </tr>
+        <tr>
+            <td>Latin sharp S</td>
+            <td>U+00DF</td>
+            <td>ß</td>
+        </tr>
+        <tr>
+            <td>Han for "East"</td>
+            <td>U+6771</td>
+            <td>東</td>
+        </tr>
+        <tr>
+            <td>Ampersand</td>
+            <td>U+0026</td>
+            <td>&amp;</td>
+        </tr>
+        <tr>
+            <td>Inverted exclamation mark</td>
+            <td>U+00A1</td>
+            <td>¡</td>
+        </tr>
+        <tr>
+            <td>Section sign</td>
+            <td>U+00A7</td>
+            <td>§</td>
+        </tr>
+    </table>
+
+    <p>Examples of Unicode code points in strings:</p>
+    
+    <ul>
+        <li>The character string "Hello!" is [U+0048, U+0065, U+006C, U+006C, U+006F, U+0021]</li>
+        <li>The character string "مرحبا" is [U+0645, U+0631, U+062D, U+0628, U+0627]</li>
+    </ul>
+
+
+
+    <h3>Code units</h3>
+
+    <p>
+        A code unit is is the minimum bit combination that can represent a character in a character encoding. For example, common code units include 7-bit, 8-bit, 16-bit, and 32-bit units.
+        <br>
+        In some encodings such as UTF-8, code points larger than the length of the code unit are encoded using multiple code units; such an encoding is referred to as a variable-length encoding.
+    </p>
+
+    <ul>
+        <li>A code unit in ASCII consists of 7 bits.</li>
+        <li>A code unit in UTF-8 consists of 8 bits.</li>
+        <li>A code unit in UTF-16 consists of 16 bits.</li>
+        <li>A code unit in UTF-32 consists of 32 bits.</li>
+    </ul>
+
+
+
+    <h3>Code spaces</h3>
+
+    <p>
+        A code space (or a code page) is a set of characters encoded with unique numbers.
+        The Unicode code space ranges from U+0000 to U+10FFFF (0 to 1114111).
+    </p>
+
+
+
+    <h3>Planes</h3>
+
+    <p>
+        The Unicode codespace is divided into 17 planes, numbered 0 to 16.
+        <br>
+        A Unicode plane is a contiguous group of 65,536 (2<sup>16</sup>) code points.
+        <br>
+        Characters in the range U+0000 to U+FFFF are in plane 0, called the Basic Multilingual Plane (BMP). This plane contains the most commonly-used characters.
+        <br>
+        Characters in the range U+10000 to U+10FFFF (in the other planes) are called supplementary characters.
+        
+        <br><br>
+        
+        All code points in the BMP require only a single code unit in the UTF-16 encoding and can be encoded in one, two, or three bytes in UTF-8.
+        <br>
+        Code points in planes 1 through 16 (the supplementary planes) are encoded as pairs of code units in UTF-16 and encoded in four bytes in UTF-8.
+    </p>
+
+
+
+    <h3>Blocks</h3>
+
+    <p>
+        Within each plane, characters are allocated within named blocks of related characters.
+        <br>
+        A Unicode block is one of several contiguous ranges of code points of the Unicode character set.
+        Each block is generally (but not always) meant to supply glyphs used by one or more specific languages, or in some general application area such as mathematics.
+
+        <br><br>
+
+        Here is a <a target=”_blank” href="https://www.unicode.org/Public/UNIDATA/Blocks.txt">list of Unicode blocks</a>.
+    </p>
+
+
+
+    <h3>Transcoding</h3>
+
+    <p>
+        Transcoding is the process of converting data from one encoding to another.
+        Such as converting UTF-8 to UTF-16.
+    </p>
+
+
+
+    <h3>Grapheme</h3>
+
+    <p>A grapheme is the smallest functional unit of a writing system.</p>
+
+
+
+    <h3>Digraph</h3>
+
+    <p>A digraph is two letters that come together to make one new sound, such as 'ch', 'sh', 'th'.</p>
+
+
+    
+    <h3>Ligature</h3>
+
+    <p>In writing and typography, a ligature occurs where two or more graphemes or letters are joined to form a single glyph.</p>
+
+
+
+
+
+    <h2 id="unique_blocks_in_unicode">
+        Unique blocks in Unicode
+        <button class="h2btn" onclick="copyURL('unique_blocks_in_unicode')">#</button>
+    </h2>
+
+    <h3>Private use areas</h3>
+
+    <p>
+        A Private Use Area (PUA) in Unicode is a range of code points that will not be assigned to characters by the standard.
+        These code points are left undefined so third parties can use them to encode their own characters.
+        <br>
+        There are three PUA blocks:
+    </p>
+
+    <ul>
+        <li>"Private Use Area" in the BMP ranging from U+E000 to U+F8FF.</li>
+        <li>"Supplementary Private Use Area-A" in plane 15 (which holds the same name, "PUA-A") ranging from U+F0000 to U+FFFFD.</li>
+        <li>"Supplementary Private Use Area-B" in plane 16 (which holds the same name, "PUA-B") ranging from U+100000 to U+10FFFD.</li>
+    </ul>
+
+
+
+    <h3>The specials block</h3>
+
+    <p>
+        Specials is a short Unicode block that exists at the end of the BMP, ranging from U+FFF0 to U+FFFF.
+        <br>
+        It includes the characters:
+    </p>
+
+    <ul>
+        <li>(U+FFF9) "Interlinear annotation anchor": Marks the start of annotated text.</li>
+        <li>(U+FFFA) "Interlinear annotation seperator": Marks the start of annotating character(s).</li>
+        <li>(U+FFFB) "Interlinear annotation terminator": Marks the end of an annotation block.</li>
+        <li>(U+FFFC) <span style="font-size: 125%;">￼</span> "Object replacement character": A placeholder in the text for an unspecified object, for example in a compound document.</li>
+        <li>(U+FFFD) � "Replacement character": Used to replace unknown or unmapped characters.</li>
+        <li>(U+FFFE) &lt;noncharacter-FFFE&gt;: noncharacter.</li>
+        <li>(U+FFFF) &lt;noncharacter-FFFF&gt;: noncharacter.</li>
+    </ul>
+
+    <p>
+        U+FFFE and U+FFFF are noncharacters, meaning they are reserved but do not cause ill-formed Unicode text.
+    </p>
+
+
+
+    <h3>Variation Selectors</h3>
+
+    <p>
+        Variation Selectors is a Unicode block containing 16 variation selectors used to specify a glyph variant for a preceding character.
+
+        <br><br>
+
+        They are currently used to specify standardized variation sequences for mathematical symbols, emoji symbols, and other characters.
+        At present only standardized variation sequences with VS1-VS4, VS7, VS15 and VS16 have been defined;
+        VS15 and VS16 are reserved to request that a character should be displayed as text or as an emoji respectively.
+
+        <br><br>
+
+        These combining characters are named variation selector-1 (for U+FE00) through to variation selector-16 (U+FE0F),
+        and are abbreviated VS1-VS16.
+
+        <br><br>
+
+        As of Unicode 13.0:
+    </p>
+
+    <ul>
+        <li>CJK compatibility ideograph variation sequences contain VS1-VS3 (U+FE00-U+FE02)</li>
+        <li>CJK Unified Ideographs Extension A and B variation sequences contain VS1 (U+FE00) and VS2 (U+FE01)</li>
+        <li>Emoji variation sequences contain VS16 (U+FE0F) for emoji-style (with color) or VS15 (U+FE0E) for text style (monochrome)</li>
+        <li>
+            Basic Latin, Halfwidth and Fullwidth Forms, Manichaean, Myanmar, Myanmar Extended-A, Phags-pa,
+            and mathematical variation sequences contain only VS1 (U+FE00)
+        </li>
+        <li>Egyptian Hieroglyphs variation sequences VS1-VS4 and VS7 (U+FE00-FE03, and U+FE06) are used to rotate specific signs</li>
+        <li>VS5, VS6, and VS8-VS14 (U+FE04, U+FE05, and U+FE07-U+FE0D) are not used for any variation sequences</li>
+    </ul>
+
+    <p>A table of variation selectors:</p>
+    
+    <table>
+        <tr>
+            <th>U+FE0x</th>
+            <th>0</th>
+            <th>1</th>
+            <th>2</th>
+            <th>3</th>
+            <th>4</th>
+            <th>5</th>
+            <th>6</th>
+            <th>7</th>
+            <th>8</th>
+            <th>9</th>
+            <th>A</th>
+            <th>B</th>
+            <th>C</th>
+            <th>D</th>
+            <th>E</th>
+            <th>F</th>
+        </tr>
+        <tr>
+            <th style="border-color: transparent;"></th>
+            <td>VS 1</td>
+            <td>VS 2</td>
+            <td>VS 3</td>
+            <td>VS 4</td>
+            <td>VS 5</td>
+            <td>VS 6</td>
+            <td>VS 7</td>
+            <td>VS 8</td>
+            <td>VS 9</td>
+            <td>VS 10</td>
+            <td>VS 11</td>
+            <td>VS 12</td>
+            <td>VS 13</td>
+            <td>VS 14</td>
+            <td>VS 15</td>
+            <td>VS 16</td>
+        </tr>
+    </table>
+
+
+
+    <h3>Variation Selectors Supplement</h3>
+
+    <p>
+        Variation Selectors Supplement is a Unicode block containing additional variation selectors beyond those in the Variation Selectors block.
+        <br>
+        These combining characters are named variation selector-17 (for U+E0100) through to variation selector-256 (U+E01EF), abbreviated VS17-VS256.
+
+        <br><br>
+
+        As of 12 December 2017, VS17 (U+E0100) to VS48 (U+E011F) are used in ideographic variation sequences
+        in the Unicode Ideographic Variation Database (IVD).
+        These selectors are known as Ideographic Variation Selectors (IVS).
+        They are not listed in the list of standardized variation sequence, instead they are listed in another <a target="_blank" href="https://www.unicode.org/ivd/">Ideographic Variation Database</a>.
+    </p>
+
+
+
+
+    
+    <h2 id="encodings">
+        Encodings
+        <button class="h2btn" onclick="copyURL('encodings')">#</button>
+    </h2>
+
+    <h3>UTF-32</h3>
+
+    <p>
+        UTF-32 stands for "Unicode Transformation Format - 32-bit".
+        <br>
+        It is a fixed-length encoding, as a single UTF-32 code unit can resemble one Unicode code point.
+        <br>
+        This means that UTF-32 encodes code points in one code unit sized 32 bits.
+
+        <br><br>
+
+        The most common use of UTF-32 is in internal APIs
+        where the data is a single code point that is directly mapped to a certain glyph, and not a string of characters.
+
+        <br><br>
+
+        a UTF-32 code unit contains 11 bits that are always zero. Often non-Unicode information is stored in these "unused" bits.
+    </p>
+
+
+
+    <h3>UTF-16</h3>
+
+    <p>
+        UTF-16 stands for "Unicode Transformation Format - 16-bit".
+        <br>
+        It is capable of encoding all valid Unicode code points using a variable-length encoding of one or two 16-bit code units.
+
+        <br><br>
+
+        All code points in the BMP (with values less than 2<sup>16</sup>) can be encoded using one code unit that is equal to the numerical value of the code point.
+
+        <br><br>
+
+        Code points from other planes are encoded as two 16-bit code units called a surrogate pair.
+        The first code unit is a high surrogate and the second is a low surrogate
+        (Also known as "leading" and "trailing" surrogates)
+    </p>
+
+    <table>
+        <tr>
+            <th>Code point - 0x10000</th>
+            <td>yyyyyyyyyyxxxxxxxxxx</td>
+        </tr>
+        <tr>
+            <th>High surrogate</th>
+            <td>110110yyyyyyyyyy</td>
+        </tr>
+        <tr>
+            <th>Low surrogate</th>
+            <td>110111xxxxxxxxxx</td>
+        </tr>
+    </table>
+
+    <p>
+        The way to convert code points to UTF16 will be explained later.
+
+        <br><br><br>
+
+        To make the detection of surrogate pairs easy, the Unicode standard has reserved the range U+D800 to U+DFFF for the use of UTF-16.
+        Code points with values in this range are called surrogate code points.
+
+        <br><br>
+        
+        The official Unicode standard says that no UTF form, including UTF-16, can encode the surrogate code points.
+        Since they will never be assigned to a character, there should be no reason to encode them.
+        <br>
+        However, Windows allows unpaired surrogates (a high surrogate code point not followed by a low one, or a low one not preceded by a high one)
+        in file paths and other places, which generally means that they have to be supported by software despite them being execluded from the Unicode standard.
+
+        
+        <br><br><br>
+
+
+        Since most communication and storage protocols are defined for bytes, and each UTF-16 code unit takes two bytes,
+        the order of bytes may depend on the endianness (byte order) of the computer architecture.
+
+        <br><br>
+
+        UTF-16 allows a byte order mark (BOM), a code point with the value U+FEFF, to precede the first actual coded value.
+        (U+FEFF is the invisible zero-width non-breaking space ZWNBSP character).
+        <br>
+        If the endian of the decoder matches that of the encoder, the decoder detects the 0xFEFF value (bytes [FE, FF]),
+        <br>
+        but an opposite-endian decoder interprets the BOM as the noncharacter value 0xFFFE (bytes [FF, FE]), which is reserved for this purpose.
+        <br>
+        This incorrect result provides a hint to perform byte-swapping for the remaining values.
+
+        <br><br>
+
+        If the BOM is missing, RFC 2781 recommends that big-endian (BE) encoding be assumed.
+        In practice, due to Windows using little-endian (LE) order by default, many applications assume little-endian encoding.
+        <br>
+        The standard also allows the byte order to be stated explicitly by specifying UTF-16BE or UTF-16LE as the encoding type.
+        <br>
+        When the byte order is specified explicitly this way, a BOM is specifically not supposed to be prepended to the text,
+        and a U+FEFF at the beginning should be handled as a ZWNBSP character.
+    </p>
+
+
+    
+    <h3>UTF-8</h3>
+
+    <p>
+        UTF-8 stands for "Unicode Transformation Format - 8-bit".
+        <br>
+        It is capable of encoding all valid Unicode code points using a variable-length encoding of one to four 8-bit code units.
+        Code points with lower numerical values (which tend to occur more frequently) are encoded using fewer bytes.
+
+        <br><br>
+
+        UTF-8 is backward compatibile with ASCII: the first 128 characters of Unicode are encoded with the same binary values as ASCII.
+        <br>
+        However, it is not backward compatibile with extended ASCII (values ranging from 128 to 255) and applications must have a dedicated conversion algorithm to convert extended ASCII to UTF-8 and vice versa.
+
+
+        <br><br><br>
+
+
+        UTF-8 encodes code points in one to four bytes depending on the value of the code point.
+        <br>
+        If you visualize a code point as (U+uvwxyz), UTF-8 bytes are arranged as follows:
+    </p>
+
+    <table>
+        <tr>
+            <th>Code point range</th>
+            <th>First byte</th>
+            <th>Second byte</th>
+            <th>Third byte</th>
+            <th>Fourth byte</th>
+        </tr>
+        <tr>
+            <td>U+0000 to U+007F</td>
+            <td>0yyyzzzz₂</td>
+        </tr>
+        <tr>
+            <td>U+0080 to U+07FF</td>
+            <td>110xxxyy₂</td>
+            <td>10yyzzzz₂</td>
+        </tr>
+        <tr>
+            <td>U+0800 to U+FFFF</td>
+            <td>1110wwww₂</td>
+            <td>10xxxxyy₂</td>
+            <td>10yyzzzz₂</td>
+        </tr>
+        <tr>
+            <td>U+010000 to U+10FFFF</td>
+            <td>11110uvv₂</td>
+            <td>10vvwwww₂</td>
+            <td>10xxxxyy₂</td>
+            <td>10yyzzzz₂</td>
+        </tr>
+    </table>
+
+    <p>
+        As you can see bytes ending with the bits 10 represent units in the middle or the end of the code point (continuation bytes).
+        <br>
+        And:
+    </p>
+
+    <ul>
+        <li>If the first byte ends with the bit 0, the code point is only one byte (ASCII).</li>
+        <li>If it ends with the bits 110, the UTF-8 encoded code point is two bytes.</li>
+        <li>If it ends with the bits 1110, the UTF-8 encoded code point is three bytes.</li>
+        <li>If it ends with the bits 11110, the UTF-8 encoded code point is four bytes.</li>
+    </ul>
+
+    <p>
+        <br>
+
+        
+        Overlong encodings:
+        <br>
+        An overlong encoding is an encoding which uses more bytes than necessary.
+        <br>
+        They are a security risk as they allow the same code point to be encoded in multiple ways.
+        <br>
+        Overlong encodings should therefore be considered an error and never decoded.
+
+        <br><br>
+
+        Error handling:
+        <br>
+        Not all sequences of bytes are valid UTF-8. A UTF-8 decoder should be prepared for:
+    </p>
+
+    <ul>
+        <li>Bytes that never appear in UTF-8: 0xC0, 0xC1, 0xF5 to 0xFF.</li>
+        <li>A continuation byte (0x80 to 0xBF) at the start of a character.</li>
+        <li>A non-continuation byte or the string of code units ending before the end of a character.</li>
+        <li>An overlong encoding (0xE0 followed by less than 0xA0, or 0xF0 followed by less than 0x90).</li>
+        <li>A 4-byte sequence that decodes to a value greater than U+10FFFF (0xF4 followed by 0x90 or greater).</li>
+    </ul>
+
+    <p>
+        The standard recommends replacing each ill-formed code unit sequence and error with the replacement character "�" (U+FFFD) and continue decoding.
+
+        <br><br>
+
+        Since RFC 3629 (November 2003), the high and low surrogates used by UTF-16 (values ranging from U+D800 to U+DFFF) are not legal Unicode values,
+        and their UTF-8 encodings must be treated as an invalid byte sequence.
+        These encodings (in UTF-8) all start with 0xED followed by 0xA0 or higher.
+        This rule is often ignored as surrogates are allowed in Windows filenames and this means there must be a way to store them in a string.
+        UTF-8 that allows these surrogate halves has been informally called WTF-8.
+
+
+        <br><br><br>
+
+
+        If the Unicode byte-order mark U+FEFF is at the start of a UTF-8 file, the first three bytes will be 0xEF, 0xBB, 0xBF.
+        <br>
+        The Unicode Standard neither requires nor recommends the use of the BOM for UTF-8,
+        but warns that it may be encountered at the start of a file transcoded from another encoding.
+        <br>
+        While UTF-8 is backward compatible with ASCII, this is not true when Unicode Standard recommendations are ignored and a BOM is added.
+        A BOM can confuse software that isn't prepared for it but can otherwise accept UTF-8,
+        e.g. programming languages that permit non-ASCII bytes in string literals but not at the start of the file.
+        Nevertheless, there is software that always inserts a BOM when writing UTF-8,
+        and refuses to correctly interpret UTF-8 unless the first character is a BOM (or the file only contains ASCII).
+    </p>
+
+
+
+    <h3>Comparison</h3>
+
+    <table>
+        <tr>
+            <th style="border-color: transparent;"></th>
+            <th>UTF-8</th>
+            <th>UTF-16</th>
+            <th>UTF-32</th>
+        </tr>
+        <tr>
+            <th>Common use</th>
+            <td>General text encoding</td>
+            <td>General text encoding</td>
+            <td>Mapping characters to glyphs</td>
+        </tr>
+        <tr>
+            <th>Size of code unit</th>
+            <td>1 byte</td>
+            <td>2 bytes</td>
+            <td>4 bytes</td>
+        </tr>
+        <tr>
+            <th>Bytes used per character</th>
+            <td>1-4 bytes</td>
+            <td>2 or 4 bytes</td>
+            <td>4 bytes</td>
+        </tr>
+        <tr>
+            <th>ASCII file compatibility</th>
+            <td>Compatible</td>
+            <td>Not compatible</td>
+            <td>Not compatible</td>
+        </tr>
+    </table>
+
+
+
+
+    
+    <h2 id="unique_characters">
+        Unique characters
+        <button class="h2btn" onclick="copyURL('unique_characters')">#</button>
+    </h2>
+
+    <h3>The byte order mark (zero-width no-break space)</h3>
+
+    <p>
+        The byte order mark (BOM) is simply the zero-width no-break space (ZWNBSP) (U+FEFF) when its in the beginning of a UTF-16 encoded text file.
+
+        <br><br>
+
+        The BOM is inserted at the beginning of a UTF-16 encoded text file to tell the endianness used in the encoding.
+        <br>
+        If the UTF-16 decoder found that the text file begins with the bytes [FE, FF], this suggests that the file is encoded in the same endianness of the decoder.
+        If the bytes were in the opposite order [FF, FE], this suggests that the file is encoded in the opposite endianness.
+
+        <br><br>
+
+        The name ZWNBSP should be used if the BOM appears in the middle of a data stream.
+        Unicode says it should be interpreted as a normal codepoint (namely a word joiner), not as a BOM.
+        Since Unicode 3.2, this usage has been deprecated in favor of the word joiner character (U+2060).
+
+        <br><br>
+
+        UTF-32 also uses the BOM character, padded with 16 zero bits.
+        <br>
+        Programmers using the BOM to identify the encoding will have to decide whether it's UTF-32 or UTF-16 by checking if a there is a null character first.
+    </p>
+
+
+
+    <h3>The word joiner character</h3>
+
+    <p>
+        The word joiner (WJ) (U+2060) is a Unicode format character which is used to indicate that line breaking should not occur at its position.
+        <br>
+        It is not a visible character and it does not have a width.
+
+        <br><br>
+
+        The word joiner replaces the zero-width no-break space (ZWNBSP, U+FEFF), as a usage of the no-break space of zero width.
+        <br>
+        The ZWNBSP is used as the byte order mark (BOM) at the start of a file.
+        However, if encountered elsewhere, it should, according to Unicode, be treated as a word joiner (a no-break space of zero width).
+        <br>
+        The use of U+FEFF for this purpose is deprecated as of Unicode 3.2, with the word joiner strongly preferred.
+    </p>
+
+
+
+    <h3>The non-breaking space character</h3>
+
+    <p>
+        A non-breaking space (also called NBSP, required space, hard space, or fixed space) (U+00A0),
+        is a space character that prevents an automatic line break at its position.
+        <br>
+        It also prevents consecutive whitespace characters from collapsing into a single space.
+
+        <br><br>
+
+        Non-breaking space characters with other widths also exist,
+        such as the narrow no-break space (NNBSP) (U+202F),
+        figure space (also called numeric space) (U+2007),
+        and the word joiner (WJ) (U+2060).
+    </p>
+
+
+
+    <h3>The zero-width space character</h3>
+
+    <p>
+        The zero-width space (ZWSP) (U+200B) is a non-printing character used to indicate where the word boundaries are,
+        without actually displaying a visible space in text.
+        <br>
+        This enables text-processing systems for scripts without visible spacing
+        to recognize where word boundaries are for the purpose of handling line breaks appropriately.
+
+        <br><br>
+
+        The ZWSP is located in the General Punctuation block (ranging from U+2000 to U+206F).
+
+        <br><br>
+        
+        ICANN rules prohibit domain names from containing non-displayed characters, including the zero-width space,
+        and most browsers prohibit their use within domain names because they can be used to create a homograph attack,
+        where a malicious URL is visually indistinguishable from a legitimate one.
+    </p>
+
+
+
+    <h3>The zero-width joiner character</h3>
+
+    <p>
+        The zero-width joiner (ZWJ) (U+200D) is a non-printing character used in text-processing systems
+        in which the shape or positioning of a grapheme depends on its relation to other graphemes (complex scripts),
+        such as the Arabic script or any Indic script. Sometimes the Roman script is to be counted as complex, e.g. when using a Fraktur typeface. When placed between two characters that would otherwise not be connected, a ZWJ causes them to be printed in their connected forms.
+        
+        <br><br>
+
+        Sometimes, when a ZWJ is placed between two emoji characters, it can result in a single emoji being shown,
+        such as the family emoji, made up of two adult emoji and one or two child emoji.
+        <br>
+        Examples:
+    </p>
+
+    <table>
+        <tr>
+            <th>Character sequence</th>
+            <th>Appearance</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>[ra র] [virāma ্ ] [ya য]</td>
+            <td>র্য</td>
+        </tr>
+        <tr>
+            <td>[ra র] [ZWJ] [virāma ্ ] [ya য]</td>
+            <td>র‍্য</td>
+        </tr>
+
+        <tr>
+            <td>[Man] [ZWJ] [Woman] [ZWJ] [Boy]</td>
+            <td>👨‍👩‍👦</td>
+            <td>Family: Man, Woman, Boy</td>
+        </tr>
+        <tr>
+            <td>[Black flag] [ZWJ] [Skull and crossbones]</td>
+            <td>🏴‍☠️</td>
+            <td>Pirate Flag</td>
+        </tr>
+        <tr>
+            <td>[Runner] [Emoji modifier fitzpatrick type-1-2] [ZWJ] [Female sign]</td>
+            <td>🏃🏻‍♀️</td>
+            <td>Woman Running: Light Skin Tone</td>
+        </tr>
+        <tr>
+            <td>[Runner] [Emoji modifier ftzpatrick type-6] [ZWJ] [Female sign]</td>
+            <td>🏃🏿‍♀️</td>
+            <td>Woman Running: Dark Skin Tone</td>
+        </tr>
+        <tr>
+            <td>[Man] [ZWJ] [Red hair]</td>
+            <td>👨‍🦰</td>
+            <td>Man: Red Hair</td>
+        </tr>
+        <tr>
+            <td>[Person] [ZWJ] [Sheaf of rice]</td>
+            <td>👨‍🌾</td>
+            <td>Farmer</td>
+        </tr>
+    </table>
+
+
+
+    <h3>The zero-width non-joiner character</h3>
+
+    <p>
+        The zero-width non-joiner (ZWNJ) (U+200C) is a non-printing character used in text-processing systems that make use of ligatures.
+
+        <br><br>
+
+        When placed between two characters that would otherwise be connected into a ligature,
+        a ZWNJ causes them to be printed in their final and initial forms, respectively.
+        <br>
+        This is also an effect of a space character, but a ZWNJ is used when it is desirable to keep the characters closer together.
+
+        <br><br>
+
+        In certain languages, the ZWNJ is necessary for specifying the correct typographic form of a character sequence. Examples:
+    </p>
+
+    <table>
+        <tr>
+            <th>Display (with ZWNJ)</th>
+            <th>Code (with ZWNJ)</th>
+            <th>Display (incorrect)</th>
+            <th>Code (incorrect)</th>
+            <th>Meaning</th>
+        </tr>
+        <tr>
+            <td style="direction: rtl;">می‌خواهم</td>
+            <td style="direction: rtl;">می|ZWNJ|خواهم</td>
+            <td style="direction: rtl;">میخواهم</td>
+            <td style="direction: rtl;">میخواهم</td>
+            <td>Persian: "I want to"</td>
+        </tr>
+        <tr>
+            <td style="direction: rtl;">ساءين‌س</td>
+            <td style="direction: rtl;">ساءين|ZWNJ|س</td>
+            <td style="direction: rtl;">ساءينس</td>
+            <td style="direction: rtl;">ساءينس</td>
+            <td>Malay: "Science"</td>
+        </tr>
+    </table>
+
+    <p>
+        Use of ZWNJ to display alternative forms:
+        <br>
+        In Indic scripts, insertion of a ZWNJ after a consonant either with a halant or before a dependent vowel
+        prevents the characters from being joined properly.
+        <br>
+        Examples:
+    </p>
+
+    <table>
+        <tr>
+            <th>Script</th>
+            <th>First character</th>
+            <th>Second character</th>
+            <th>combined (no ZWNJ)</th>
+            <th>combined (ZWNJ between characters)</th>
+        </tr>
+        <tr>
+            <td>Devanagari</td>
+            <td>क्</td>
+            <td>ष</td>
+            <td>क्ष</td>
+            <td>क्‌ष</td>
+        </tr>
+        <tr>
+            <td>Kannada</td>
+            <td>ನ್</td>
+            <td>ನ</td>
+            <td>ನ್ನ</td>
+            <td>ನ್‌ನ</td>
+        </tr>
+    </table>
+
+
+
+    <h3>Combining characters</h3>
+
+    <p>
+        Combining characters are characters that are intended to modify other characters.
+        <br>
+        The most common combining characters in the Latin script are the combining diacritical marks (including combining accents).
+
+        <br><br>
+        
+        For example: Cyrillic "U" combined with a breve gives "ў".
+
+        <br><br>
+
+        Unicode also contains many precomposed characters.
+        This leads to a requirement to perform Unicode normalization before comparing two Unicode strings
+        and to carefully design encoding converters
+        to correctly map all of the valid ways to represent a character in Unicode to a legacy encoding to avoid data loss.
+        
+        <br><br>
+
+        The main block of combining diacritics for European languages and the International Phonetic Alphabet is U+0300 to U+036F.
+        <br>
+        Combining diacritical marks are also present in many other blocks of Unicode characters.
+        Unicode diacritics are always added after the main character.
+
+        <br><br>
+
+        The following blocks are dedicated specifically to combining characters:
+    </p>
+
+    <ul>
+        <li>Combining Diacritical Marks (U+0300 to U+036F)</li>
+        <li>Combining Diacritical Marks Extended (U+1AB0 to U+1AFF)</li>
+        <li>Combining Diacritical Marks Supplement (U+1DC0 to U+1DFF)</li>
+        <li>Combining Diacritical Marks for Symbols (U+20D0 to U+20FF)</li>
+        <li>Cyrillic Extended-A (U+2DE0 to U+2DFF)</li>
+        <li>Combining Half Marks (U+FE20 to U+FE2F)</li>
+    </ul>
+
+    <p>
+        Combining characters are not limited to these blocks;
+        for instance, the combining dakuten (U+3099) and combining handakuten (U+309A) are in the Hiragana block.
+    </p>
+
+
+
+    <h3>More terms</h3>
+
+    <p>
+        Zalgo text:
+        <br>
+        Combining characters have been used to create Zalgo text,
+        which is text that appears "corrupted" or "creepy" due to an overuse of combining characters.
+        This causes the text to extend vertically, overlapping other text.
+        <br>
+        This is mostly used in horror contexts on the internet.
+        It is typically very challenging for most software to render, so the combining marks are often reduced or completely removed.
+
+        <br><br>
+
+        Grapheme clusters:
+        <br>
+        A Grapheme Cluster is a sequence of one or more Unicode code points that must be treated as a single, unbreakable character.
+
+        <br><br>
+
+        Combining character sequences:
+        <br>
+        A combining character sequence is a character sequence consisting of a base character followed by one or more combining characters.
+
+        <br><br>
+
+        Character sequences:
+        <br>
+        The Unicode standard specifies notational conventions for referring to sequences of characters (or code points) treated as a single unit.
+
+        <br><br>
+
+        An example of a combining character sequence:
+    </p>
+    
+    <table>
+        <tr><td>[U+0061, U+0302, U+0301]</td></tr>
+        <tr><td>[Latin small letter A, Combining circumflex accent, Combining acute accent]</td></tr>
+    </table>
+
+    <p>Here is a <a target="_blank" href="https://unicode.org/Public/UNIDATA/NamedSequences.txt">list of named character sequences</a>.</p>
+
+
+
+    <h3>Combining grapheme joiner</h3>
+
+    <p>
+        The combining grapheme joiner (CGJ) (U+034F) is a character that has no visible glyph.
+        Its name is a misnomer and does not describe its function, the character does not join graphemes.
+        Its purpose is to separate characters that should not be considered digraphs
+        as well as to block canonical reordering of combining marks during normalization.
+
+        <br><br>
+
+        For example, in a Hungarian language context,
+        adjoining letters c and s would normally be considered equivalent to the cs digraph.
+        If they are separated by the CGJ, they will be considered as two separate graphemes.
+        <br>
+        However, in contrast to the zero-width joiner and similar characters,
+        the CGJ does not affect whether the two letters are rendered separately or as a ligature or cursively joined,
+        the default behavior for this is determined by the font.
+    </p>
+
+
+
+    <h3>Dotted circle</h3>
+
+    <p>
+        In Unicode, the dotted circle (◌) (U+25CC) is a non-significant typographic character used to illustrate the effect of a combining mark,
+        such as a diacritic mark.
+
+        <br><br>
+
+        An illustration:
+    </p>
+
+    <ul>
+        <li>Diacritic ̒ used alone between regular spaces.</li>
+        <li>Diacritic ◌̒ used after a dotted circle.</li>
+    </ul>
+
+
+
+    <h3>Emoji</h3>
+
+    <p>
+        Unicode 15.1 specifies a total of 3,782 emoji using 1,424 characters spread across 24 blocks.
+        26 of these emoji are Regional indicator symbols that combine in pairs to form flag emoji,
+        and 12 (#, * and 0 - 9) are base characters for keycap emoji sequences.
+        
+        <br><br>
+
+        Code points that are considered emoji are:
+    </p>
+
+    <ul>
+        <li>637 of the 768 code points in the Miscellaneous Symbols and Pictographs block.</li>
+        <li>242 of the 256 code points in the Supplemental Symbols and Pictographs block.</li>
+        <li>All of the 107 code points in the Symbols and Pictographs Extended-A block.</li>
+        <li>All of the 80 code points in the Emoticons block.</li>
+        <li>105 of the 118 code points in the Transport and Map Symbols block.</li>
+        <li>83 of the 256 code points in the Miscellaneous Symbols block.</li>
+        <li>33 of the 192 code points in the Dingbats block.</li>
+    </ul>
+
+    <p>
+        <br>
+
+        Some vendors add emoji presentation to some other existing Unicode characters or make their own ZWJ sequences.
+
+        <br><br>
+
+        Microsoft displayed all Mahjong tiles (U+1F000‥2B, not just U+1F004 🀄 MAHJONG TILE RED DRAGON)
+        and alternative card suits (U+2661 ♡ WHITE HEART SUIT, U+2662 ♢ WHITE DIAMOND SUIT, U+2664 ♤ WHITE SPADE SUIT, U+2667 ♧ WHITE CLUB SUIT)
+        as emoji. They also supported additional pencils (U+270E ✎ LOWER RIGHT PENCIL, U+2710 ✐ UPPER RIGHT PENCIL)
+        and a heart-shaped bullet (U+2765 ❥ ROTATED HEAVY BLACK HEART BULLET).
+
+        <br><br>
+
+        While only U+261D (☝) WHITE UP POINTING INDEX is officially an emoji,
+        Microsoft and Samsung added the other three directions as well (U+261C ☜ WHITE LEFT POINTING INDEX,
+        U+261E ☞ WHITE RIGHT POINTING INDEX, U+261F ☟ WHITE DOWN POINTING INDEX). Microsoft no longer supports these emoji now.
+
+        <br><br>
+        
+        Both vendors pair the standard checked ballot box emoji U+2611 ☑ BALLOT BOX WITH CHECK
+        with its crossed variant U+2612 ☒ BALLOT BOX WITH X,
+        but only Samsung also has the empty ballot box U+2610 ☐ BALLOT BOX.
+
+
+        <br><br><br>
+
+
+        The regional indicator symbols are a set of 26 alphabetic Unicode characters (A-Z)
+        intended to be used to encode two-letter country codes in a way that allows optional special treatment.
+        <br>
+        These were defined by October 2010 as part of the Unicode 6.0 support for emoji,
+        as an alternative to encoding separate characters for each country flag.
+
+        <br><br>
+
+        Although they can be displayed as Roman letters,
+        it is intended that implementations may choose to display them in other ways, such as by using national flags.
+        The Unicode FAQ indicates that this mechanism should be used and that symbols for national flags will not be directly encoded.
+
+        <br><br>
+
+        They are encoded in the range (U+1F1E6) (🇦) REGIONAL INDICATOR SYMBOL LETTER A to (U+1F1FF) (🇿) REGIONAL INDICATOR SYMBOL LETTER Z
+        within the Enclosed Alphanumeric Supplement block in the Supplementary Multilingual Plane.
+
+        <br><br>
+
+        A pair of regional indicator symbols is referred to as an emoji flag sequence
+        (although it represents a specific region, not a specific flag for that region).
+        <br>
+        Out of the 676 possible pairs of regional indicator symbols (26x26), only 270 are considered valid Unicode region codes.
+        
+        
+        <br><br><br>
+
+
+        There are emoji sequences that are made of multiple emoji,
+        here is a <a target="_blank" href="https://unicode.org/emoji/charts/emoji-sequences.html">list of these emoji sequences</a>
+        <br>
+        There are emoji ZWJ sequences made out of multiple emoji with the ZWJ character,
+        they are listed <a target="_blank" href="https://unicode.org/emoji/charts/emoji-zwj-sequences.html">here</a>
+        <br>
+        Here is a <a href="https://unicode.org/emoji/charts/emoji-list.html">list of all emoji</a>.
+
+
+        <br><br><br>
+
+
+        Emoticons:
+        <br>
+        Emoticons is a Unicode block containing emoticons and other emoji.
+        Most of them are intended as representations of faces,
+        although some of them include hand gestures or non-human characters (a horned imp, monkeys, and cartoonish cats).
+
+        <br><br>
+
+        Each emoticon has two variants:
+    </p>
+
+    <ul>
+        <li>U+FE0E (Variation selector-15) selects text presentation (monochrome) (e.g. 😊︎ 😐︎ ☹︎).</li>
+        <li>U+FE0F (Variation selector-16) selects emoji-style (e.g. 😊️ 😐️ ☹️).</li>
+    </ul>
+
+    <p>
+        If there is no variation selector appended, the default is the emoji-style.
+        <br>
+        Example:
+    </p>
+
+    <table>
+        <tr>
+            <th>Code points</th>
+            <th>Result</th>
+        </tr>
+        <tr>
+            <td>U+1F610 (Neutral face)</td>
+            <td>😐</td>
+        </tr>
+        <tr>
+            <td>U+1F610 (Neutral face), U+FE0E (Variation selector-15)</td>
+            <td>😐︎</td>
+        </tr>
+        <tr>
+            <td>U+1F610 (Neutral face), U+FE0F (Variation selector-16)</td>
+            <td>😐️</td>
+        </tr>
+    </table>
+
+    <p>
+        <br>
+        
+        Emoji modifiers:
+        <br>
+        Five symbol modifier characters were added with Unicode 8.0 to provide a range of skin tones for human emoji.
+        <br>
+        These modifiers are called EMOJI MODIFIER FITZPATRICK TYPE- 1-2, 3, 4, 5, and 6 (U+1F3FB - U+1F3FF): 🏻 🏼 🏽 🏾 🏿.
+        They are based on the Fitzpatrick scale for classifying human skin color.
+        <br>
+        Here is an example of emoji with different FITZ emoji modifiers:
+    </p>
+
+    <table>
+        <tr>
+            <th style="border-color: transparent;"></th>
+            <th>1F645</th>
+            <th>1F646</th>
+            <th>1F647</th>
+            <th>1F64B</th>
+            <th>1F64C</th>
+            <th>1F64D</th>
+            <th>1F64E</th>
+            <th>1F64F</th>
+        </tr>
+        <tr>
+            <th>No modifier</th>
+            <td>🙅</td>
+            <td>🙆</td>
+            <td>🙇</td>
+            <td>🙋</td>
+            <td>🙌</td>
+            <td>🙍</td>
+            <td>🙎</td>
+            <td>🙏</td>
+        </tr>
+        <tr>
+            <th>FITZ-1-2</th>
+            <td>🙅🏻</td>
+            <td>🙆🏻</td>
+            <td>🙇🏻</td>
+            <td>🙋🏻</td>
+            <td>🙌🏻</td>
+            <td>🙍🏻</td>
+            <td>🙎🏻</td>
+            <td>🙏🏻</td>
+        </tr>
+        <tr>
+            <th>FITZ-3</th>
+            <td>🙅🏼</td>
+            <td>🙆🏼</td>
+            <td>🙇🏼</td>
+            <td>🙋🏼</td>
+            <td>🙌🏼</td>
+            <td>🙍🏼</td>
+            <td>🙎🏼</td>
+            <td>🙏🏼</td>
+        </tr>
+        <tr>
+            <th>FITZ-4</th>
+            <td>🙅🏽</td>
+            <td>🙆🏽</td>
+            <td>🙇🏽</td>
+            <td>🙋🏽</td>
+            <td>🙌🏽</td>
+            <td>🙍🏽</td>
+            <td>🙎🏽</td>
+            <td>🙏🏽</td>
+        </tr>
+        <tr>
+            <th>FITZ-5</th>
+            <td>🙅🏾</td>
+            <td>🙆🏾</td>
+            <td>🙇🏾</td>
+            <td>🙋🏾</td>
+            <td>🙌🏾</td>
+            <td>🙍🏾</td>
+            <td>🙎🏾</td>
+            <td>🙏🏾</td>
+        </tr>
+        <tr>
+            <th>FITZ-6</th>
+            <td>🙅🏿</td>
+            <td>🙆🏿</td>
+            <td>🙇🏿</td>
+            <td>🙋🏿</td>
+            <td>🙌🏿</td>
+            <td>🙍🏿</td>
+            <td>🙎🏿</td>
+            <td>🙏🏿</td>
+        </tr>
+    </table>
+
+    <p>
+        <br>
+        
+        Some examples of emoji sequences:
+    </p>
+
+    <table>
+        <tr>
+            <th>Code points</th>
+            <th>Character names</th>
+            <th>Characters</th>
+            <th>Result</th>
+            <th>Emoji name</th>
+        </tr>
+        <tr>
+            <td>[U+0039, U+FE0F, U+20E3]</td>
+            <td>[Nine, Variation selector-16, Combining enclosing keycap]</td>
+            <td>[9, U+FE0F, &#x20E3;]</td>
+            <td>9️⃣</td>
+            <td>Keycap digit nine emoji</td>
+        </tr>
+        <tr>
+            <td>[U+2764, U+FE0F, U+200D, U+1FA79]</td>
+            <td>[Red heart, Variation selector-16, ZWJ, Adhesive bandage]</td>
+            <td>[❤️, U+FE0F, U+200D, 🩹]</td>
+            <td>❤️‍🩹</td>
+            <td>Mending heart emoji</td>
+        </tr>
+        <tr>
+            <td>[U+1F3F4, U+200D, U+2620, U+FE0F]</td>
+            <td>[Black flag, ZWJ, Skull and crossbones, Variation selector-16]</td>
+            <td>[🏴, U+200D, ☠️, U+FE0F]</td>
+            <td>🏴‍☠️</td>
+            <td>Pirate flag</td>
+        </tr>
+        <tr>
+            <td>[U+1F1EE, U+1F1F6]</td>
+            <td>[Regional indicator symbol letter I, Regional indicator symbol letter Q]</td>
+            <td>[🇮, 🇶]</td>
+            <td>🇮🇶</td>
+            <td>Flag: Iraq</td>
+        </tr>
+        <tr>
+            <td>[U+1FAF1, U+1F3FB, U+200D, U+1FAF2, U+1F3FF]</td>
+            <td>[Rightwards hand, Emoji modifier fitzpatrick type-1-2, ZWJ, Leftwards hand, Emoji modifier fitzpatrick type-6]</td>
+            <td>[🫱, U+1F3FB, U+200D, 🫲, U+1F3FF]</td>
+            <td>🫱🏻‍🫲🏿</td>
+            <td>Handshake: light skin tone, dark skin tone</td>
+        </tr>
+    </table>
+
+
+
+    <h3>Noncharacters</h3>
+
+    <p>
+        The unhyphenated term "noncharacter" refers to 66 code points (labeled &lt;not a character&gt;)
+        permanently reserved for internal use, and therefore guaranteed to never be assigned to a character.
+
+        <br><br>
+
+        Each of the 17 planes has its two ending code points set as noncharacters. So, noncharacters are:
+        U+FFFE and U+FFFF on the BMP, U+1FFFE and U+1FFFF on Plane 1, and so on, up to U+10FFFE and U+10FFFF on Plane 16,
+        for a total of 34 code points. In addition, there is a contiguous range of another 32 noncharacter code points in the BMP:
+        U+FDD0 - U+FDEF. Software implementations are free to use these code points for internal use.
+
+        <br><br>
+
+        One particularly useful example of a noncharacter is the code point U+FFFE.
+        This code point has the reverse UTF-16 byte sequence of the byte order mark (U+FEFF).
+        <br>
+        If a stream of text contains this noncharacter at the start,
+        this is an indication the text has been interpreted with the incorrect endianness.
+
+        <br><br>
+
+        Noncharacters are not illegal in interchange nor do they cause ill-formed Unicode text.
+    </p>
+
+
+
+
+
+    <h3>Whitespace characters</h3>
+
+    <p>
+        A whitespace character is a character that represents empty space when text is rendered.
+        <br>
+        A printable character results in output when rendered, but a whitespace character does not.
+        Instead, whitespace characters define the layout of text to a limited degree,
+        interrupting the normal sequence of rendering characters next to each other.
+        The output of subsequent characters is typically shifted to the right (or to the left for right-to-left text)
+        or to the start of the next line.
+
+        <br><br>
+
+        The term whitespace is rooting in the common practice of printing text on white paper.
+        Normally, a whitespace character is not rendered as white. It affects rendering, but it is not itself rendered.
+
+        <br><br>
+
+        The table below lists the twenty-five characters defined as whitespace ("WSpace=Y", "WS") characters in the Unicode Character Database.
+        Seventeen use a definition of whitespace consistent with the algorithm for bidirectional writing ("Bidirectional Character Type=WS")
+        and are known as "Bidi-WS" characters.
+        <br>
+        Bidirectional text is explained in the next section of this summary.
+    </p>
+
+    <table>
+        <tr>
+            <th>Character name</th>
+            <th>Code point</th>
+            <th>May break</th>
+            <th>In IDN</th>
+            <th>Script</th>
+            <th>Block</th>
+            <th>General category</th>
+        </tr>
+        <tr>
+            <td>Character tabulation</td>
+            <td>U+0009</td>
+            <td style="background-color: green;">Yes</td>
+            <td style="background-color: rgb(183, 0, 0);">No</td>
+            <td>Common</td>
+            <td>Basic Latin</td>
+            <td>Other, control</td>
+        </tr>
+        <tr>
+            <td>Line feed</td>
+            <td>U+000A</td>
+            <td style="background-color: green;">Is a line-break</td>
+            <td style="background-color: rgb(183, 0, 0);">Is a line-break</td>
+            <td>Common</td>
+            <td>Basic Latin</td>
+            <td>Other, control</td>
+        </tr>
+        <tr>
+            <td>Line tabulation</td>
+            <td>U+000B</td>
+            <td style="background-color: green;">Is a line-break</td>
+            <td style="background-color: rgb(183, 0, 0);">Is a line-break</td>
+            <td>Common</td>
+            <td>Basic Latin</td>
+            <td>Other, control</td>
+        </tr>
+        <tr>
+            <td>Form feed</td>
+            <td>U+000C</td>
+            <td style="background-color: green;">Is a line-break</td>
+            <td style="background-color: rgb(183, 0, 0);">Is a line-break</td>
+            <td>Common</td>
+            <td>Basic Latin</td>
+            <td>Other, control</td>
+        </tr>
+        <tr>
+            <td>Carriage return</td>
+            <td>U+000D</td>
+            <td style="background-color: green;">Is a line-break</td>
+            <td style="background-color: rgb(183, 0, 0);">Is a line-break</td>
+            <td>Common</td>
+            <td>Basic Latin</td>
+            <td>Other, control</td>
+        </tr>
+        <tr>
+            <td>Space</td>
+            <td>U+0020</td>
+            <td style="background-color: green;">Yes</td>
+            <td style="background-color: rgb(183, 0, 0);">No</td>
+            <td>Common</td>
+            <td>Basic Latin</td>
+            <td>Separator, space</td>
+        </tr>
+        <tr>
+            <td>Next line</td>
+            <td>U+0085</td>
+            <td style="background-color: green;">Is a line-break</td>
+            <td style="background-color: rgb(183, 0, 0);">Is a line-break</td>
+            <td>Common</td>
+            <td>Latin-1 Supplement</td>
+            <td>Other, control</td>
+        </tr>
+        <tr>
+            <td>No-break space</td>
+            <td>U+00A0</td>
+            <td style="background-color: rgb(183, 0, 0);">No</td>
+            <td style="background-color: rgb(183, 0, 0);">No</td>
+            <td>Common</td>
+            <td>Latin-1 Supplement</td>
+            <td>Separator, space</td>
+        </tr>
+        <tr>
+            <td>Ogham space mark</td>
+            <td>U+1680</td>
+            <td style="background-color: green;">Yes</td>
+            <td style="background-color: rgb(183, 0, 0);">No</td>
+            <td>Ogham</td>
+            <td>Ogham</td>
+            <td>Separator, space</td>
+        </tr>
+        <tr>
+            <td>En quad</td>
+            <td>U+2000</td>
+            <td style="background-color: green;">Yes</td>
+            <td style="background-color: rgb(183, 0, 0);">No</td>
+            <td>Common</td>
+            <td>General Punctuation</td>
+            <td>Separator, space</td>
+        </tr>
+        <tr>
+            <td>Em quad</td>
+            <td>U+2001</td>
+            <td style="background-color: green;">Yes</td>
+            <td style="background-color: rgb(183, 0, 0);">No</td>
+            <td>Common</td>
+            <td>General Punctuation</td>
+            <td>Separator, space</td>
+        </tr>
+        <tr>
+            <td>En space</td>
+            <td>U+2002</td>
+            <td style="background-color: green;">Yes</td>
+            <td style="background-color: rgb(183, 0, 0);">No</td>
+            <td>Common</td>
+            <td>General Punctuation</td>
+            <td>Separator, space</td>
+        </tr>
+        <tr>
+            <td>Em space</td>
+            <td>U+2003</td>
+            <td style="background-color: green;">Yes</td>
+            <td style="background-color: rgb(183, 0, 0);">No</td>
+            <td>Common</td>
+            <td>General Punctuation</td>
+            <td>Separator, space</td>
+        </tr>
+        <tr>
+            <td>Three-per-em space</td>
+            <td>U+2004</td>
+            <td style="background-color: green;">Yes</td>
+            <td style="background-color: rgb(183, 0, 0);">No</td>
+            <td>Common</td>
+            <td>General Punctuation</td>
+            <td>Separator, space</td>
+        </tr>
+        <tr>
+            <td>Four-per-em space</td>
+            <td>U+2005</td>
+            <td style="background-color: green;">Yes</td>
+            <td style="background-color: rgb(183, 0, 0);">No</td>
+            <td>Common</td>
+            <td>General Punctuation</td>
+            <td>Separator, space</td>
+        </tr>
+        <tr>
+            <td>Six-per-em space</td>
+            <td>U+2006</td>
+            <td style="background-color: green;">Yes</td>
+            <td style="background-color: rgb(183, 0, 0);">No</td>
+            <td>Common</td>
+            <td>General Punctuation</td>
+            <td>Separator, space</td>
+        </tr>
+        <tr>
+            <td>Figure space</td>
+            <td>U+2007</td>
+            <td style="background-color: rgb(183, 0, 0);">No</td>
+            <td style="background-color: rgb(183, 0, 0);">No</td>
+            <td>Common</td>
+            <td>General Punctuation</td>
+            <td>Separator, space</td>
+        </tr>
+        <tr>
+            <td>Punctuation space</td>
+            <td>U+2008</td>
+            <td style="background-color: green;">Yes</td>
+            <td style="background-color: rgb(183, 0, 0);">No</td>
+            <td>Common</td>
+            <td>General Punctuation</td>
+            <td>Separator, space</td>
+        </tr>
+        <tr>
+            <td>Thin space</td>
+            <td>U+2009</td>
+            <td style="background-color: green;">Yes</td>
+            <td style="background-color: rgb(183, 0, 0);">No</td>
+            <td>Common</td>
+            <td>General Punctuation</td>
+            <td>Separator, space</td>
+        </tr>
+        <tr>
+            <td>Hair space</td>
+            <td>U+200A</td>
+            <td style="background-color: green;">Yes</td>
+            <td style="background-color: rgb(183, 0, 0);">No</td>
+            <td>Common</td>
+            <td>General Punctuation</td>
+            <td>Separator, space</td>
+        </tr>
+        <tr>
+            <td>Line separator</td>
+            <td>U+2028</td>
+            <td style="background-color: green;">Is a line-break</td>
+            <td style="background-color: rgb(183, 0, 0);">Is a line-break</td>
+            <td>Common</td>
+            <td>General Punctuation</td>
+            <td>Separator, paragraph</td>
+        </tr>
+        <tr>
+            <td>Paragraph separator</td>
+            <td>U+2029</td>
+            <td style="background-color: green;">Is a line-break</td>
+            <td style="background-color: rgb(183, 0, 0);">Is a line-break</td>
+            <td>Common</td>
+            <td>General Punctuation</td>
+            <td>Separator, paragraph</td>
+        </tr>
+        <tr>
+            <td>Narrow no-break space</td>
+            <td>U+202F</td>
+            <td style="background-color: rgb(183, 0, 0);">No</td>
+            <td style="background-color: rgb(183, 0, 0);">No</td>
+            <td>Common</td>
+            <td>General Punctuation</td>
+            <td>Separator, space</td>
+        </tr>
+        <tr>
+            <td>Medium mathematical space</td>
+            <td>U+205F</td>
+            <td style="background-color: green;">Yes</td>
+            <td style="background-color: rgb(183, 0, 0);">No</td>
+            <td>Common</td>
+            <td>General Punctuation</td>
+            <td>Separator, space</td>
+        </tr>
+        <tr>
+            <td>Ideographic space</td>
+            <td>U+3000</td>
+            <td style="background-color: green;">Yes</td>
+            <td style="background-color: rgb(183, 0, 0);">No</td>
+            <td>Common</td>
+            <td>CJK Symbols and Punctuation</td>
+            <td>Separator, space</td>
+        </tr>
+    </table>
+
+    <p>Related characters with property White_Space=no:</p>
+
+    <table>
+        <tr>
+            <th>Character name</th>
+            <th>Code point</th>
+            <th>May break</th>
+            <th>In IDN</th>
+            <th>Script</th>
+            <th>Block</th>
+            <th>General category</th>
+        </tr>
+        <tr>
+            <td>Mongolian vowel separator</td>
+            <td>U+180E</td>
+            <td style="background-color: green;">Yes</td>
+            <td style="background-color: rgb(183, 0, 0);">No</td>
+            <td>Mongolian</td>
+            <td>Mongolian</td>
+            <td>Other, Format</td>
+        </tr>
+        <tr>
+            <td>Zero width space</td>
+            <td>U+200B</td>
+            <td style="background-color: green;">Yes</td>
+            <td style="background-color: rgb(183, 0, 0);">No</td>
+            <td>?</td>
+            <td>General Punctuation</td>
+            <td>Other, Format</td>
+        </tr>
+        <tr>
+            <td>Zero-width non-joiner</td>
+            <td>U+200C</td>
+            <td style="background-color: green;">Yes</td>
+            <td style="background-color: rgb(200, 168, 8);">Context-dependent</td>
+            <td>?</td>
+            <td>General Punctuation</td>
+            <td>Other, Format</td>
+        </tr>
+        <tr>
+            <td>Zero-width joiner</td>
+            <td>U+200D</td>
+            <td style="background-color: green;">Yes</td>
+            <td style="background-color: rgb(200, 168, 8);">Context-dependent</td>
+            <td>?</td>
+            <td>General Punctuation</td>
+            <td>Other, Format</td>
+        </tr>
+        <tr>
+            <td>Word joiner</td>
+            <td>U+2060</td>
+            <td style="background-color: rgb(183, 0, 0);">No</td>
+            <td style="background-color: rgb(183, 0, 0);">No</td>
+            <td>?</td>
+            <td>General Punctuation</td>
+            <td>Other, Format</td>
+        </tr>
+        <tr>
+            <td>Zero width non-breaking space</td>
+            <td>U+FEFF</td>
+            <td style="background-color: rgb(183, 0, 0);">No</td>
+            <td style="background-color: rgb(183, 0, 0);">No</td>
+            <td>?</td>
+            <td>Arabic Presentation Forms-B</td>
+            <td>Other, Format</td>
+        </tr>
+    </table>
+
+    <p>
+        Substitute images:
+        <br>
+        Unicode also provides some visible characters that can be used to represent various whitespace characters,
+        in contexts where a visible symbol should be displayed:
+    </p>
+
+    <table>
+        <tr>
+            <th>Character name</th>
+            <th>Code point</th>
+            <th>Displayed character</th>
+            <th>Block</th>
+            <th>Description</th>
+        </tr>
+        <tr>
+            <td>Middle dot</td>
+            <td>U+00B7</td>
+            <td><big>·</big></td>
+            <td>Latin-1 Supplement</td>
+            <td>Interpunct.</td>
+        </tr>
+        <tr>
+            <td>Downwards two headed arrow</td>
+            <td>U+21A1</td>
+            <td><big>↡</big></td>
+            <td>Arrows</td>
+            <td>ECMA-17 / ISO 2047 symbol for form feed (page break).</td>
+        </tr>
+        <tr>
+            <td>Identical to</td>
+            <td>U+2261</td>
+            <td><big>≡</big></td>
+            <td>Mathematical Operators</td>
+            <td>Amongst other uses, is the ECMA-17 / ISO 2047 symbol for line feed.</td>
+        </tr>
+        <tr>
+            <td>Shouldered open box</td>
+            <td>U+237D</td>
+            <td><big>⍽</big></td>
+            <td>Miscellaneous Technical</td>
+            <td>Used to indicate a NBSP.</td>
+        </tr>
+        <tr>
+            <td>Return symbol</td>
+            <td>U+23CE</td>
+            <td><big>⏎</big></td>
+            <td>Miscellaneous Technical	</td>
+            <td>The symbol for a return key, which enters a line break.</td>
+        </tr>
+        <tr>
+            <td>Control Pictures</td>
+            <td>U+2409</td>
+            <td><big>␉</big></td>
+            <td>Control Pictures</td>
+            <td>Substitutes for a tab character.</td>
+        </tr>
+        <tr>
+            <td>Symbol for line feed</td>
+            <td>U+240A</td>
+            <td><big>␊</big></td>
+            <td>Control Pictures</td>
+            <td>Substitutes for a line feed.</td>
+        </tr>
+        <tr>
+            <td>Symbol for vertical tabulation</td>
+            <td>U+240B</td>
+            <td><big>␋</big></td>
+            <td>Control Pictures</td>
+            <td>Substitutes for a vertical tab (line tab).</td>
+        </tr>
+        <tr>
+            <td>Symbol for form feed</td>
+            <td>U+240C</td>
+            <td><big>␌</big></td>
+            <td>Control Pictures</td>
+            <td>Substitutes for a form feed (page break).</td>
+        </tr>
+        <tr>
+            <td>Symbol for carriage return</td>
+            <td>U+240D</td>
+            <td><big>␍</big></td>
+            <td>Control Pictures</td>
+            <td>Substitutes for a carriage return.</td>
+        </tr>
+        <tr>
+            <td>Symbol for space</td>
+            <td>U+2420</td>
+            <td><big>␠</big></td>
+            <td>Control Pictures</td>
+            <td>Substitutes for an ASCII space.</td>
+        </tr>
+        <tr>
+            <td>Blank symbol</td>
+            <td>U+2422</td>
+            <td><big>␢</big></td>
+            <td>Control Pictures</td>
+            <td>also known as "substitute blank", used in BCDIC, EBCDIC, ASCII-1963 etc. as a symbol for the word separator.</td>
+        </tr>
+        <tr>
+            <td>Open box</td>
+            <td>U+2423</td>
+            <td><big>␣</big></td>
+            <td>Control Pictures</td>
+            <td>
+                Used in block letter handwriting at least since the 1980s
+                when it is necessary to explicitly indicate the number of space characters
+                (e.g. when programming with pen and paper).
+                <br>
+                Used in a textbook published by Springer-Verlag on Modula-2,
+                a programming language where space codes require explicit indication.
+                <br>
+                Also used in the keypad of the Texas Instruments' TI-8x series of graphing calculators.
+            </td>
+        </tr>
+        <tr>
+            <td>Symbol for newline</td>
+            <td>U+2424</td>
+            <td><big>␤</big></td>
+            <td>Control Pictures</td>
+            <td>Substitutes for a line break.</td>
+        </tr>
+        <tr>
+            <td>White up-pointing triangle</td>
+            <td>U+25B3</td>
+            <td><big>△</big></td>
+            <td>Geometric Shapes</td>
+            <td>Amongst other uses, it's the ECMA-17 / ISO 2047 symbol for the ASCII space.</td>
+        </tr>
+        <tr>
+            <td>Logical Or with middle stem</td>
+            <td>U+2A5B</td>
+            <td><big>⩛</big></td>
+            <td>Supplemental Mathematical Operators</td>
+            <td>Amongst other uses, it's the ECMA-17 / ISO 2047 symbol for vertical tab (line tab).</td>
+        </tr>
+        <tr>
+            <td>Smaller than</td>
+            <td>U+2AAA</td>
+            <td><big>⪪</big></td>
+            <td>Supplemental Mathematical Operators</td>
+            <td>Amongst other uses, it'ss the ECMA-17 / ISO 2047 symbol for carriage return.</td>
+        </tr>
+        <tr>
+            <td>Larger than</td>
+            <td>U+2AAB</td>
+            <td><big>⪫</big></td>
+            <td>Supplemental Mathematical Operators</td>
+            <td>Amongst other uses, it's the ECMA-17 / ISO 2047 symbol for the tab character.</td>
+        </tr>
+        <tr>
+            <td>Ideographic Telegraph Line Feed Separator Symbol</td>
+            <td>U+3037</td>
+            <td><big>〷</big></td>
+            <td>CJK Symbols and Punctuation</td>
+            <td>Graphic used for code 9999 in Chinese telegraph code, representing a line feed.</td>
+        </tr>
+    </table>
+
+
+
+
+
+    <h2 id="character_properties">
+        Character properties
+        <button class="h2btn" onclick="copyURL('character_properties')">#</button>
+    </h2>
+
+    <p>
+        The Unicode Standard assigns various properties to each Unicode code point.
+        <br>
+        These properties can be used to handle code points in processes, like in line-breaking, script direction or applying controls.
+        <br>
+        Some character properties are also defined for code points that have no character assigned,
+        and code points that are labeled "&lt;not a character&gt;".
+
+        <br><br>
+
+        Character properties is a very long subject which will not be covered in this summary.
+        <br>
+        If you would like to read about character properties in Unicode,
+        here is a <a target=”_blank” href="https://wikipedia.org/wiki/Unicode_character_property">Wikipedia article about it</a>.
+        This article also contains information about whitespace characters, blocks, and other elements.
+    </p>
+
+
+
+
+
+    <h2 id="bidi_text">
+        Bidirectional text
+        <button class="h2btn" onclick="copyURL('bidi_text')">#</button>
+    </h2>
+
+    <p>
+        A bidirectional text contains two text directionalities, right-to-left (RTL) and left-to-right (LTR).
+        <br>
+        In some right-to-left scripts such as the Persian script and Arabic,
+        mathematical expressions, numeric dates, numbers, and left-to-right text are embedded from left to right.
+        <br>
+        A text is also bidirectional if a right-to-left script is embedded in a left-to-right text.
+
+        <br><br>
+
+        The Unicode standard calls for characters to be ordered logically, i.e. in the sequence they are intended to be interpreted.
+        <br>
+        In order to offer bidi support,
+        Unicode prescribes an algorithm for how to convert the logical sequence of characters into the correct visual presentation.
+        <br>
+        For this purpose, the Unicode encoding standard divides all of its characters into one of four types:
+        "strong", "weak", "neutral", and "explicit formatting".
+    </p>
+
+    <ul>
+        <li>Strong characters</li>
+        <p>
+            Strong characters are those with a definite direction.
+            <br>
+            Examples of this type of character include most alphabetic characters, syllabic characters, Han ideographs,
+            non-European or non-Arabic digits, and punctuation characters that are specific to only those scripts.
+        </p>
+        <li>Weak characters</li>
+        <p>
+            Weak characters are those with vague direction.
+            <br>
+            Examples of this type of character include European digits, Eastern Arabic-Indic digits, arithmetic symbols, and currency symbols.
+        </p>
+        <li>Neutral characters</li>
+        <p>
+            Neutral characters have direction indeterminable without context. Examples include paragraph separators,
+            tabs, and most other whitespace characters.
+            <br>
+            Punctuation symbols that are common to many scripts,
+            such as the colon, comma, full-stop, and the no-break-space also fall within this category.
+        </p>
+        <li>Explicit formatting</li>
+        <p>
+            Explicit formatting characters, also referred to as "directional formatting characters",
+            are special Unicode sequences that direct the algorithm to modify its default behavior.
+            <br>
+            These characters are subdivided into "marks", "embeddings", "isolates", and "overrides".
+            Their effects continue until the occurrence of either a paragraph separator, or a "pop" character.
+        </p>
+    </ul>
+
+    <p>Subdivisions of the "Explicit formatting" character type:</p>
+
+    <ul>
+        <li>Marks</li>
+        <p>
+            If a "weak" character is followed by another "weak" character, the algorithm will look at the first neighbouring "strong" character.
+            <br>
+            Sometimes this leads to unintentional display errors. These errors are corrected or prevented with "pseudo-strong" characters.
+            Such Unicode control characters are called marks. The mark (U+200E) LEFT-TO-RIGHT MARK (LRM) or (U+200F) RIGHT-TO-LEFT MARK (RLM)
+            is to be inserted into a location to make an enclosed weak character inherit its writing direction.
+
+            <br><br>
+
+            For example, to correctly display the TRADE MARK SIGN character (™) (U+2122) for an English name brand (LTR)
+            in an Arabic (RTL) passage, a LRM mark is inserted after the trademark symbol if the symbol is not followed by LTR text.
+            <br>
+            If the LRM mark is not added, the weak character ™ will be neighbored by a strong LTR character and a strong RTL character.
+            Hence, in an RTL context, it will be considered to be RTL, and displayed in an incorrect order.
+        </p>
+        <li>Embeddings</li>
+        <p>
+            The "embedding" directional formatting characters are the classical Unicode method of explicit formatting,
+            and as of Unicode 6.3, are being discouraged in favor of "isolates".
+            
+            <br><br>
+
+            An "embedding" signals that a piece of text is to be treated as directionally distinct.
+            The text within the scope of the embedding formatting characters is not independent of the surrounding text.
+            <br>
+            Also, characters within an embedding can affect the ordering of characters outside.
+            <br>
+            Unicode 6.3 recognized that directional embeddings usually have too strong an effect on their surroundings
+            and are thus unnecessarily difficult to use.
+        </p>
+        <li>Isolates</li>
+        <p>
+            The "isolate" directional formatting characters signal that a piece of text is to be treated
+            as directionally isolated from its surroundings.
+
+            <br><br>
+
+            As of Unicode 6.3, these are the formatting characters that are being encouraged in new documents.
+            These formatting characters were introduced after it became apparent
+            that "embeddings" usually have too strong an effect on their surroundings
+            and are thus unnecessarily difficult to use.
+
+            <br><br>
+
+            Unlike the legacy 'embedding' directional formatting characters,
+            'isolate' characters have no effect on the ordering of the text outside their scope.
+            <br>
+            Isolates can be nested, and may be placed within embeddings and overrides.
+        </p>
+        <li>Overrides</li>
+        <p>
+            The "override" directional formatting characters allow for special cases, such as for part numbers
+            (e.g. to force a part number made of mixed English digits and Hebrew letters to be written from right to left),
+            and are recommended to be avoided wherever possible.
+
+            <br><br>
+
+            Just like the other directional formatting characters, "overrides" can be nested one inside another, and in embeddings and isolates.
+        </p>
+    </ul>
+
+    <p>
+        Pops:
+        <br>
+        The "pop" directional formatting characters terminate the scope of the most recent "embedding", "override", or "isolate".
+
+        <br><br>
+
+        In the algorithm, each sequence of concatenated strong characters is called a "run".
+        <br>
+        A "weak" character that is located between two "strong" characters with the same orientation will inherit their orientation.
+        <br>
+        A "weak" character that is located between two "strong" characters with a different writing direction
+        will inherit the main context's writing direction (in an LTR document the character will become LTR, in an RTL document, it will become RTL).
+
+        <br><br>
+
+        A table of Bidi character types:
+    </p>
+
+    <table>
+        <tr>
+            <th>Type</th>
+            <th>Type description</th>
+            <th>Strength</th>
+            <th>Directionality</th>
+            <th>General scope</th>
+            <th>Bidi control character</th>
+        </tr>
+        <tr>
+            <td>L</td>
+            <td>Left-to-Right</td>
+            <td>Strong</td>
+            <td>L-to-R</td>
+            <td>Most alphabetic and syllabic characters, Chinese characters, non-European or non-Arabic digits, LRM character, ...</td>
+            <td>U+200E LEFT-TO-RIGHT MARK (LRM)</td>
+        </tr>
+        <tr>
+            <td>R</td>
+            <td>Right-to-Left</td>
+            <td>Strong</td>
+            <td>R-to-L</td>
+            <td>Adlam, Garay, Hebrew, Mandaic, Mende Kikakui, N'Ko, Samaritan, ancient scripts like Kharoshthi and Nabataean, RLM character, ...</td>
+            <td>U+200F RIGHT-TO-LEFT MARK (RLM)</td>
+        </tr>
+        <tr>
+            <td>AL</td>
+            <td>Arabic Letter</td>
+            <td>Strong</td>
+            <td>R-to-L</td>
+            <td>Arabic, Hanifi Rohingya, Sogdian, Syriac, and Thaana alphabets, and most punctuation specific to those scripts, ALM character, ...</td>
+            <td>U+061C ARABIC LETTER MARK (ALM)</td>
+        </tr>
+        <tr>
+            <td>EN</td>
+            <td>European Number</td>
+            <td>Weak</td>
+            <td></td>
+            <td>European digits, Eastern Arabic-Indic digits, Coptic epact numbers, ...</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>ES</td>
+            <td>European Separator</td>
+            <td>Weak</td>
+            <td></td>
+            <td>Plus sign, minus sign, ...</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>ET</td>
+            <td>	European Number Terminator</td>
+            <td>Weak</td>
+            <td></td>
+            <td>Degree sign, currency symbols, ...</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>AN</td>
+            <td>Arabic Number</td>
+            <td>Weak</td>
+            <td></td>
+            <td>Arabic-Indic digits, Arabic decimal and thousands separators, Rumi digits, Hanifi Rohingya digits, ...</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>CS</td>
+            <td>Common Number Separator</td>
+            <td>Weak</td>
+            <td></td>
+            <td>Colon, comma, full stop, no-break space, ...</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>NSM</td>
+            <td>Nonspacing Mark</td>
+            <td>Weak</td>
+            <td></td>
+            <td>Characters in the general categories: Mark (M), Nonspacing mark (Mn), Enclosing mark (Me)</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>BN</td>
+            <td>Boundary Neutral</td>
+            <td>Weak</td>
+            <td></td>
+            <td>Default ignorables, noncharacters, control characters other than those explicitly given other types</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>B</td>
+            <td>Paragraph Separator</td>
+            <td>Neutral</td>
+            <td></td>
+            <td>Paragraph separator, appropriate Newline Functions, higher-level protocol paragraph determination</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>S</td>
+            <td>Segment Separator</td>
+            <td>Neutral</td>
+            <td></td>
+            <td>Tabs</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>WS</td>
+            <td>Whitespace</td>
+            <td>Neutral</td>
+            <td></td>
+            <td>Space, figure space, line separator, form feed, General Punctuation block spaces (smaller set than the whitespace list)</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>ON</td>
+            <td>Other Neutrals</td>
+            <td>Neutral</td>
+            <td></td>
+            <td>All other characters, including object replacement character</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>LRE</td>
+            <td>Left-to-Right Embedding</td>
+            <td>Explicit</td>
+            <td>L-to-R</td>
+            <td>LRE character only</td>
+            <td>U+202A LEFT-TO-RIGHT EMBEDDING (LRE)</td>
+        </tr>
+        <tr>
+            <td>LRO</td>
+            <td>Left-to-Right Override</td>
+            <td>Explicit</td>
+            <td>L-to-R</td>
+            <td>LRO character only</td>
+            <td>U+202D LEFT-TO-RIGHT OVERRIDE (LRO)</td>
+        </tr>
+        <tr>
+            <td>RLE</td>
+            <td>Right-to-Left Embedding</td>
+            <td>Explicit</td>
+            <td>R-to-L</td>
+            <td>RLE character only</td>
+            <td>U+202B RIGHT-TO-LEFT EMBEDDING (RLE)</td>
+        </tr>
+        <tr>
+            <td>RLO</td>
+            <td>Right-to-Left Override</td>
+            <td>Explicit</td>
+            <td>R-to-L</td>
+            <td>RLO character only</td>
+            <td>U+202E RIGHT-TO-LEFT OVERRIDE (RLO)</td>
+        </tr>
+        <tr>
+            <td>PDF</td>
+            <td>Pop Directional Format</td>
+            <td>Explicit</td>
+            <td></td>
+            <td>PDF character only</td>
+            <td>U+202C POP DIRECTIONAL FORMATTING (PDF)</td>
+        </tr>
+        <tr>
+            <td>LRI</td>
+            <td>Left-to-Right Isolate</td>
+            <td>Explicit</td>
+            <td>L-to-R</td>
+            <td>LRI character only</td>
+            <td>U+2066 LEFT-TO-RIGHT ISOLATE (LRI)</td>
+        </tr>
+        <tr>
+            <td>RLI</td>
+            <td>Right-to-Left Isolate</td>
+            <td>Explicit</td>
+            <td>R-to-L</td>
+            <td>RLI character only</td>
+            <td>U+2067 RIGHT-TO-LEFT ISOLATE (RLI)</td>
+        </tr>
+        <tr>
+            <td>FSI</td>
+            <td>First Strong Isolate</td>
+            <td>Explicit</td>
+            <td></td>
+            <td>FSI character only</td>
+            <td>U+2068 FIRST STRONG ISOLATE (FSI)</td>
+        </tr>
+        <tr>
+            <td>PDI</td>
+            <td>Pop Directional Isolate</td>
+            <td>Explicit</td>
+            <td></td>
+            <td>PDI character only</td>
+            <td>U+2069 POP DIRECTIONAL ISOLATE (PDI)</td>
+        </tr>
+    </table>
+    
+
+
+
+    
+    <h2 id="the_unicode_collation_algorithm">
+        The Unicode collation algorithm
+        <button class="h2btn" onclick="copyURL('the_unicode_collation_algorithm')">#</button>
+    </h2>
+
+    <p>
+        The Unicode collation algorithm (UCA) is an algorithm defined in Unicode Technical Report #10,
+        which is a customizable method to produce binary strings from strings representing
+        text in any writing system and language that can be represented with Unicode.
+        <br>
+        These binary strings can then be efficiently compared byte by byte in order to collate or sort them according to the rules of the language,
+        with options for ignoring case, accents, etc.
+
+        <br><br>
+
+        Unicode Technical Report #10 also specifies the Default Unicode Collation Element Table (DUCET).
+        This data file specifies a default collation ordering. The DUCET is customizable for different languages,
+        and some such customizations can be found in the Unicode Common Locale Data Repository (CLDR).
+
+        <br><br>
+
+        An open source implementation of UCA is included with the International Components for Unicode, ICU.
+        ICU supports tailoring, and the collation tailorings from CLDR are included in ICU.
+    </p>
+    
+
+
+
+    
+    <h2 id="unicode_equivalence">
+        Unicode equivalence
+        <button class="h2btn" onclick="copyURL('unicode_equivalence')">#</button>
+    </h2>
+
+    <p>
+        Unicode equivalence is the specification by the Unicode standard that some sequences of code points represent essentially the same character.
+        This feature was introduced in the standard to allow compatibility with pre-existing standard character sets,
+        which often included similar or identical characters.
+        <br>
+        Unicode provides two such notions, canonical equivalence and compatibility.
+
+        <br><br>
+
+        Code point sequences that are defined as canonically equivalent are assumed to have the same appearance and meaning when printed or displayed.
+        For example, the code point U+006E (n) LATIN SMALL LETTER N followed by U+0303 (&#x0303; ) COMBINING TILDE
+        is defined by Unicode to be canonically equivalent to the single code point U+00F1 (ñ) LATIN SMALL LETTER N WITH TILDE of the Spanish alphabet.
+        <br>
+        Therefore, those sequences should be displayed in the same manner, should be treated in the same way by applications
+        such as alphabetizing names or searching, and may be substituted for each other.
+        <br>
+        Similarly, each Hangul syllable block that is encoded as a single character may be equivalently encoded as a
+        combination of a leading conjoining jamo, a vowel conjoining jamo, and, if appropriate, a trailing conjoining jamo.
+
+        <br><br>
+        
+        Sequences that are defined as compatible are assumed to have possibly distinct appearances, but the same meaning in some contexts.
+        Thus, for example, the code point U+FB00 (the typographic ligature "ﬀ")
+        is defined to be compatible but not canonically equivalent to the sequence U+0066 U+0066 (two Latin "f" letters).
+        <br>
+        Compatible sequences may be treated the same way in some applications (such as sorting and indexing), but not in others;
+        and may be substituted for each other in some situations, but not in others.
+        <br>
+        Sequences that are canonically equivalent are also compatible, but the opposite is not necessarily true.
+
+        <br><br>
+
+        The standard also defines a text normalization procedure, called Unicode normalization, that replaces equivalent sequences of characters
+        so that any two texts that are equivalent will be reduced to the same sequence of code points,
+        called the normalization form or normal form of the original text.
+        <br>
+        For each of the two equivalence notions, Unicode defines two normal forms,
+        one fully composed (where multiple code points are replaced by single points whenever possible),
+        and one fully decomposed (where single points are split into multiple ones).
+    </p>
+
+
+
+    <h3>Sources of equivalence</h3>
+
+    <p>
+        Character duplication:
+        <br>
+        For compatibility or other reasons, Unicode sometimes assigns two different code points to entities
+        that are essentially the same character.
+        <br>
+        For example, the letter "A with a ring diacritic above" is encoded as U+00C5 (Å) LATIN CAPITAL LETTER A WITH RING ABOVE
+        (a letter of the alphabet in Swedish and several other languages) or as U+212B Å ANGSTROM SIGN.
+        Yet the symbol for angstrom is defined to be that Swedish letter, and most other symbols that are letters
+        (such as "V" for volt) do not have a separate code point for each usage.
+        <br>
+        In general, the code points of truly identical characters are defined to be canonically equivalent.
+
+        <br><br>
+
+        Combining and precomposed characters:
+        <br>
+        For consistency with some older standards, Unicode provides single code points for many characters that could be viewed
+        as modified forms of other characters (such as U+00F1 for "ñ" or U+00C5 for "Å")
+        or as combinations of two or more characters (such as U+FB00 for the ligature "ﬀ" or U+0132 for the Dutch letter "Ĳ")
+        <br>
+        For consistency with other standards, and for greater flexibility, Unicode also provides codes for many elements
+        that are not used on their own, but are meant instead to modify or combine with a preceding base character.
+        Examples of these combining characters are the combining tilde and the Japanese diacritic dakuten ("◌゛", U+3099).
+        <br>
+        In the context of Unicode, character composition is the process of replacing the code points of a base letter
+        followed by one or more combining characters into a single precomposed character; and character decomposition is the opposite process.
+        <br>
+        In general, precomposed characters are defined to be canonically equivalent to the sequence of
+        their base letter and subsequent combining diacritic marks, in whatever order these may occur.
+        <br>
+        An example: "Amélie" with its two canonically equivalent Unicode forms (NFC and NFD):
+    </p>
+
+    <table>
+        <tr>
+            <th>NFC characters</th>
+            <td>A</td>
+            <td>m</td>
+            <td>é</td>
+            <td>l</td>
+            <td>i</td>
+            <td>e</td>
+        </tr>
+        <tr>
+            <th>NFC code points</th>
+            <td>U+0041</td>
+            <td>U+006D</td>
+            <td>U+00E9</td>
+            <td>U+006C</td>
+            <td>U+0069</td>
+            <td>U+0065</td>
+        </tr>
+        <tr>
+            <th>NFD code points</th>
+            <td>U+0041</td>
+            <td>U+006D</td>
+            <td>[U+0065, U+0301]</td>
+            <td>U+006C</td>
+            <td>U+0069</td>
+            <td>U+0065</td>
+        </tr>
+        <tr>
+            <th>NFD characters</th>
+            <td>A</td>
+            <td>m</td>
+            <td>[e, ◌́ ]</td>
+            <td>l</td>
+            <td>i</td>
+            <td>e</td>
+        </tr>
+    </table>
+
+    <p>
+        Typographical non-interaction:
+        <br>
+        Some scripts regularly use multiple combining marks that do not, in general, interact typographically,
+        and do not have precomposed characters for the combinations.
+        Pairs of such non-interacting marks can be stored in either order. These alternative sequences are, in general, canonically equivalent.
+        The rules that define their sequencing in the canonical form also define whether they are considered to interact.
+
+        <br><br>
+
+        Typographic conventions:
+        <br>
+        Unicode provides code points for some characters or groups of characters which are modified only for aesthetic reasons
+        (such as ligatures, the half-width katakana characters, or the full-width Latin letters for use in Japanese texts),
+        or to add new semantics without losing the original one (such as digits in subscript or superscript positions,
+        or the circled digits (such as "①") inherited from some Japanese fonts).
+        <br>
+        Such a sequence is considered compatible with the sequence of original (individual and unmodified) characters,
+        for the benefit of applications where the appearance and added semantics are not relevant.
+        <br>
+        However, the two sequences are not declared canonically equivalent,
+        since the distinction has some semantic value and affects the rendering of the text.
+    </p>
+
+
+
+    <h3>Normalization</h3>
+
+    <p>
+        A text processing software implementing the Unicode string search and comparison functionality must take into account
+        the presence of equivalent code points. In the absence of this feature, users searching for a particular code point sequence
+        would be unable to find other visually indistinguishable glyphs that have a different, but canonically equivalent, code point representation.
+
+        <br><br>
+
+        Algorithms:
+        <br>
+        Unicode provides standard normalization algorithms that produce a unique (normal) code point sequence
+        for all sequences that are equivalent; the equivalence criteria can be either canonical (NF) or compatibility (NFK).
+        <br>
+        Since one can arbitrarily choose the representative element of an equivalence class,
+        multiple canonical forms are possible for each equivalence criterion.
+        Unicode provides two normal forms that are semantically meaningful for each of the two compatibility criteria:
+        the composed forms NFC and NFKC, and the decomposed forms NFD and NFKD.
+        Both the composed and decomposed forms impose a canonical ordering on the code point sequence,
+        which is necessary for the normal forms to be unique.
+        <br>
+        In order to compare or search Unicode strings, software can use either composed or decomposed forms;
+        this choice does not matter as long as it is the same for all strings involved in a search, comparison, etc.
+        On the other hand, the choice of equivalence criteria can affect search results.
+        For instance, some typographic ligatures like U+FB03 (ﬃ), Roman numerals like U+2168 (Ⅸ) and even subscripts and superscripts,
+        e.g. U+2075 (⁵) have their own Unicode code points. Canonical normalization (NF) does not affect any of these,
+        but compatibility normalization (NFK) will decompose the ffi ligature into the constituent letters, so a search for U+0066 (f)
+        as substring would succeed in an NFKC normalization of U+FB03 but not in NFC normalization of U+FB03.
+        <br>
+        Likewise when searching for the Latin letter I (U+0049) in the precomposed Roman numeral Ⅸ (U+2168).
+        Similarly, the superscript ⁵ (U+2075) is transformed to 5 (U+0035) by compatibility mapping.
+        <br>
+        Transforming superscripts into baseline equivalents may not be appropriate,
+        however, for rich text software, because the superscript information is lost in the process. To allow for this distinction,
+        the Unicode character database contains compatibility formatting tags that provide additional details on the compatibility transformation.
+        In the case of typographic ligatures, this tag is simply &lt;compat&gt;, while for the superscript it is &lt;super&gt;.
+        Rich text standards like HTML take into account the compatibility tags.
+        For instance, HTML uses its own markup to position a "5" (U+0035) in a superscript position.
+        
+        <br><br>
+
+        Normal forms:
+        <br>
+        The four Unicode normalization forms and the algorithms (transformations) for obtaining them are listed in the table:
+    </p>
+
+    <table>
+        <tr>
+            <th>NFD (Normalization Form Canonical Decomposition)</th>
+            <td>Characters are decomposed by canonical equivalence, and multiple combining characters are arranged in a specific order.</td>
+        </tr>
+        <tr>
+            <th>NFC (Normalization Form Canonical Composition)</th>
+            <td>Characters are decomposed and then recomposed by canonical equivalence.</td>
+        </tr>
+        <tr>
+            <th>NFKD (Normalization Form Compatibility Decomposition)</th>
+            <td>Characters are decomposed by compatibility, and multiple combining characters are arranged in a specific order.</td>
+        </tr>
+        <tr>
+            <th>NFKC (Normalization Form Compatibility Composition)</th>
+            <td>Characters are decomposed by compatibility, then recomposed by canonical equivalence.</td>
+        </tr>
+    </table>
+
+    <p>
+        All these algorithms are idempotent transformations, meaning that a string that is already in one of these normalized forms
+        will not be modified if processed again by the same algorithm.
+        <br>
+        The normal forms are not closed under string concatenation. For defective Unicode strings starting with a Hangul vowel
+        or trailing conjoining jamo, concatenation can break Composition.
+        <br>
+        However, they are not injective (they map different original glyphs and sequences to the same normalized sequence)
+        and thus also not bijective (cannot be restored).
+        For example, the distinct Unicode strings "U+212B" (the angstrom sign "Å") and "U+00C5" (the Swedish letter "Å")
+        are both expanded by NFD (or NFKD) into the sequence [U+0041 U+030A] (Latin letter "A" and combining ring above "°")
+        which is then reduced by NFC (or NFKC) to "U+00C5" (the Swedish letter "Å").
+        <br>
+        A single character (other than a Hangul syllable block) that will get replaced by another under normalization
+        can be identified in the Unicode tables for having a non-empty compatibility field but lacking a compatibility tag.
+
+        <br><br>
+
+        Canonical ordering:
+        <br>
+        The canonical ordering is mainly concerned with the ordering of a sequence of combining characters.
+        For the examples in this section we assume these characters to be diacritics,
+        even though in general some diacritics are not combining characters, and some combining characters are not diacritics.
+        <br>
+        Unicode assigns each character a combining class, which is identified by a numerical value.
+        Non-combining characters have class number 0, while combining characters have a positive combining class value.
+        To obtain the canonical ordering, every substring of characters having non-zero combining class value
+        must be sorted by the combining class value using a stable sorting algorithm.
+        Stable sorting is required because combining characters with the same class value are assumed to interact typographically,
+        thus the two possible orders are not considered equivalent.
+        <br>
+        For example, the character U+1EBF (ế), used in Vietnamese, has both an acute and a circumflex accent.
+        Its canonical decomposition is the three-character sequence U+0065 (e) U+0302 (circumflex accent) U+0301 (acute accent).
+        The combining classes for the two accents are both 230, thus U+1EBF is not equivalent to U+0065 U+0301 U+0302.
+        <br>
+        Since not all combining sequences have a precomposed equivalent
+        (the last one in the previous example can only be reduced to U+00E9 U+0302),
+        even the normal form NFC is affected by combining characters' behavior.
+    </p>
+
+
+
+
+
+    <h2 id="implementing_unicode_support">
+        Implementing Unicode support in your code
+        <button class="h2btn" onclick="copyURL('implementing_unicode_support')">#</button>
+    </h2>
+
+    <p>We will use the C programming language for example code, as it's an easy language to understand.</p>
+
+
+
+    <h3>Printing Unicode encoded text onto the terminal</h3>
+
+    <p>
+        On Windows, you can use wide characters and wide print functions to print Unicode text. You will also need to use
+        <a target="_blank" href="https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/setmode?view=msvc-170">the "_setmode" function</a>
+        to set the output mode to Unicode, otherwise only ASCII will be printed:
+    </p>
+
+    <pre><code class="language-c">
+#include &lt;stdio.h&gt;
+#include &lt;fcntl.h&gt; //The "_O_U16TEXT" macro is here
+
+int main()
+{
+    _setmode(1, _O_U16TEXT);
+    wprintf(L"Hello مرحباً\n"); //A string prefixed with the letter "L" is a wide string
+    return 0;
+}            
+    </code></pre>
+
+    <p>
+        Please note that the arabic text will be printed in a left-to-right direction without forming ligatures.
+
+        <br><br>
+
+        On Linux UNWRITTEN
+    </p>
+
+
+
+    <h3>Converting UTF-32 to UTF-8</h3>
+    
+    <p>
+        In a revisit of the UTF-8 byte table: if you visualize a code point as (U+uvwxyz), UTF-8 bytes are arranged as follows:
+    </p>
+
+    <table>
+        <tr>
+            <th>Code point range</th>
+            <th>First byte</th>
+            <th>Second byte</th>
+            <th>Third byte</th>
+            <th>Fourth byte</th>
+        </tr>
+        <tr>
+            <td>U+0000 to U+007F</td>
+            <td>0yyyzzzz₂</td>
+        </tr>
+        <tr>
+            <td>U+0080 to U+07FF</td>
+            <td>110xxxyy₂</td>
+            <td>10yyzzzz₂</td>
+        </tr>
+        <tr>
+            <td>U+0800 to U+FFFF</td>
+            <td>1110wwww₂</td>
+            <td>10xxxxyy₂</td>
+            <td>10yyzzzz₂</td>
+        </tr>
+        <tr>
+            <td>U+010000 to U+10FFFF</td>
+            <td>11110uvv₂</td>
+            <td>10vvwwww₂</td>
+            <td>10xxxxyy₂</td>
+            <td>10yyzzzz₂</td>
+        </tr>
+    </table>
+
+    <p>In the code below, the if statements check for the amount of code units required to fit the code point:</p>
+
+    <ul>
+        <li>If the code point's value &lt;= U+007F (127), it's an ASCII character which fits into one UTF-8 code unit.</li>
+        <li>If the code point's value &lt;= U+07FF (2047), it fits into two UTF-8 code units.</li>
+        <li>If the code point's value &lt;= U+FFFF (65535), it fits into three UTF-8 code units.</li>
+        <li>If the code point's value &lt;= U+10FFFF (1114111), it fits into four UTF-8 code units.</li>
+        <li>If the code point's value is greater than U+10FFFF, it's an invalid code point.</li>
+    </ul>
+
+    <pre><code>
+#include &lt;stdio.h&gt;
+#include &lt;stdint.h&gt;
+
+uint8_t utf32ToUtf8(uint32_t codePoint, uint8_t output[5])
+{
+    if (codePoint &lt;= 0x007F) // Fits into one UTF8 code unit (ASCII)
+    {
+        output[0] = (uint8_t) codePoint;
+        output[1] = '\0';
+        return 1;
+    }
+    else if (codePoint &lt;= 0x07FF) // Fits into two UTF8 code units
+    {
+        output[0] = (uint8_t) (((codePoint &gt;&gt; 6) & 0b0011111) | 0b11000000);
+        output[1] = (uint8_t) ((codePoint & 0b0111111) | 0b10000000);
+        output[2] = '\0';
+        return 2;
+    }
+    else if (codePoint &lt;= 0xFFFF) // Fits into three UTF8 code units
+    {
+        output[0] = (uint8_t) (((codePoint &gt;&gt; 12) & 0b00001111) | 0b11100000);
+        output[1] = (uint8_t) (((codePoint &gt;&gt; 6) & 0b00111111) | 0b10000000);
+        output[2] = (uint8_t) ((codePoint & 0b00111111) | 0b10000000);
+        output[3] = '\0';
+        return 3;
+    }
+    else if (codePoint &lt;= 0x10FFFF) // Fits into four UTF8 code units
+    {
+        output[0] = (uint8_t) (((codePoint &gt;&gt; 18) & 0b00000111) | 0b11110000);
+        output[1] = (uint8_t) (((codePoint &gt;&gt; 12) & 0b00111111) | 0b10000000);
+        output[2] = (uint8_t) (((codePoint &gt;&gt; 6) & 0b00111111) | 0b10000000);
+        output[3] = (uint8_t) ((codePoint & 0b00111111) | 0b10000000);
+        output[4] = '\0';
+        return 4;
+    }
+    else
+    {
+        output[0] = '\0';
+        return UINT8_MAX; // We will consider the return value "UINT8_MAX" (255) to mean "invalid"
+    }
+}
+
+int main()
+{
+    uint8_t output[5] = {0};
+    uint8_t codeUnitCount = utf32ToUtf8(0x1D70F, output); // The character U+1D70F is "Mathematical Italic Small Tau" "𝜏"
+
+    printf("Amount of code units: %d\n", codeUnitCount);
+
+    printf("Code units:\n");
+    for (uint8_t i = 0; i &lt; codeUnitCount; i++)
+        printf("%X\n", output[i]);
+    
+    return 0;
+}            
+    </code></pre>
+
+    <p>
+        The output is [F0, 9D, 9C, 8F]. In binary
+        [<span class="lightBlueUnderline">11110</span>000, <span class="lightBlueUnderline">10</span>011101,
+        <span class="lightBlueUnderline">10</span>011100, <span class="lightBlueUnderline">10</span>001111].
+
+        <br><br>
+
+        If you're confused by the bitwise operations, here's an explanation:
+    </p>
+
+    <ul>
+        <li>
+            When the code point's value &lt;= U+07FF (two code units):
+            <br>
+            the maximum amount of that value (0x07FF) in binary is twenty-one zeroes followed by eleven ones
+            (0000_0000_0000_0000_0000_0111_1111_1111), so when we bitshift to the right by six,
+            we are removing the rightmost six bits, with the result of five bits left.
+            <br>
+            These five bits are then bitwise ANDed by five set bits to remove any extra set bits on the left,
+            and bitwise ORed by <span class="lightBlueUnderline">110</span>00000₂
+            to set the first three bits to 110₂, and finally casted to an unsigned 8-bit integer, creating the first code unit "110xxxyy₂".
+
+            <br><br>
+
+            The six bits we ignored before will be now used to make the second code unit "10yyzzzz₂".
+            To get these bits we bitwise AND the code point by 0111111₂ to remove any extra set bits,
+            and then bitwise OR the result by <span class="lightBlueUnderline">10</span>000000₂ to set the first two bits to 10₂.
+        </li>
+        <br>
+        <li>
+            When the code point's value &lt;= U+FFFF (three code units):
+            <br>
+            0xFFFF in binary is sixteen zeroes followed by sixteen ones.
+            <br>
+            We first get four bits for the first code unit (1110wwww₂) by bitshifting by twelve (16 - 4),
+            then we perform bitwise AND and OR in the same way.
+            <br>
+            After that we get six bits for the second unit (10xxxxyy₂) by bitshifting by six (16 - 4 - 6) proceeded by the same steps.
+            <br>
+            At last we get another six bits for the third unit (10yyzzzz₂) by only performing a bitwise AND, then a bitwise OR.
+        </li>
+        <br>
+        <li>
+            When the code point's value &lt;= U+10FFFF (four code units):
+            <br>
+            0x10FFFF in binary is eleven zeroes followed by twenty-one ones.
+            The first code unit holds three bits of the code point. The second, third, and fourth all hold six bits.
+        </li>
+    </ul>
+
+    <p>Please note that the code blocks are basic examples, they aren't perfect and they don't check for common errors.</p>
+
+
+
+    <h3>Converting UTF-8 to UTF-32</h3>
+
+    <p>
+        In the code below, we're doing a bitwise AND with comparison to check if the first UTF-8 code unit starts with 0₂, 110₂, 1110₂, or 11110₂
+        to determine the amount of code units.
+    </p>
+
+    <pre><code class="language-c">
+#include &lt;stdio.h&gt;
+#include &lt;stdint.h&gt;
+
+uint32_t utf8ToUtf32(const uint8_t utf8Char[4])
+{
+    if ((utf8Char[0] & 0b10000000) == 0b0) // One code unit
+    {
+        return (uint32_t) utf8Char[0];
+    }
+    else if ((utf8Char[0] & 0b11100000) == 0b11000000) // Two code units
+    {
+        if (utf8Char[1] == '\0') return UINT32_MAX; // We will consider the return value "UINT32_MAX" (0xFFFFFFFF) to mean "invalid"
+
+        return ((uint32_t)(utf8Char[0] & 0b00011111) &lt;&lt; 6) +
+                (uint32_t)(utf8Char[1] & 0b00111111);
+    }
+    else if ((utf8Char[0] & 0b11110000) == 0b11100000) // Three code units
+    {
+        if (utf8Char[1] == '\0' || utf8Char[2] == '\0') return UINT32_MAX;
+        
+        return ((uint32_t)(utf8Char[0] & 0b00001111) &lt;&lt; 12) +
+                ((uint32_t)(utf8Char[1] & 0b00111111) &lt;&lt; 6) +
+                (uint32_t)(utf8Char[2] & 0b00111111);
+    }
+    else if ((utf8Char[0] & 0b11111000) == 0b11110000) // Four code units
+    {
+        if (utf8Char[1] == '\0' || utf8Char[2] == '\0' || utf8Char[3] == '\0') return UINT32_MAX;
+
+        return ((uint32_t)(utf8Char[0] & 0b00000111) &lt;&lt; 18) +
+            ((uint32_t)(utf8Char[1] & 0b00111111) &lt;&lt; 12) +
+            ((uint32_t)(utf8Char[2] & 0b00111111) &lt;&lt; 6) +
+            (uint32_t)(utf8Char[3] & 0b00111111);
+    }
+}
+
+int main()
+{
+    uint8_t codeUnits[5] = {0xD0, 0x87, '\0'}; // The character (U+0407) is "Cyrillic Capital Letter Yi" "ї"
+    printf("%X\n", utf8ToUtf32(codeUnits));
+    return 0;
+}
+    </code></pre>
+
+    <p>The output is 0x407.</p>
+    
+    <table>
+        <tr>
+            <th>Code point range</th>
+            <th>First byte</th>
+            <th>Second byte</th>
+            <th>Third byte</th>
+            <th>Fourth byte</th>
+        </tr>
+        <tr>
+            <td>U+0000 to U+007F</td>
+            <td>0yyyzzzz₂</td>
+        </tr>
+        <tr>
+            <td>U+0080 to U+07FF</td>
+            <td>110xxxyy₂</td>
+            <td>10yyzzzz₂</td>
+        </tr>
+        <tr>
+            <td>U+0800 to U+FFFF</td>
+            <td>1110wwww₂</td>
+            <td>10xxxxyy₂</td>
+            <td>10yyzzzz₂</td>
+        </tr>
+        <tr>
+            <td>U+010000 to U+10FFFF</td>
+            <td>11110uvv₂</td>
+            <td>10vvwwww₂</td>
+            <td>10xxxxyy₂</td>
+            <td>10yyzzzz₂</td>
+        </tr>
+    </table>
+
+    <ul>
+        <li>If there is only one code unit, we simply cast it to a 32-bit unsigned integer with the same value as that code unit.</li>
+        <br>
+        <li>
+            If there are two code units, we remove the extra leftmost bits from the code units,
+            we convert both of them to an unsigned 32-bit integer, we bitshift the first unit (when it's a 32-bit integer) to the left by six,
+            then we add the results of the first and second units together.
+            This mixes the values of the code units back to a full code point (a UTF-32 code unit).
+        </li>
+        <br>
+        <li>
+            If there are three units, we also remove the extra bits on the left, and convert them all to an unsigned 32-bit integer.
+            Then we bitshift the first unit's result to the left by twelve, and the second by six. And finally mix the results with addition. 
+        </li>
+        <br>
+        <li>
+            If there are four units, we do the same steps but we bitshift the first unit to the left by eighteen,
+            the second by twelve, and the third by six.
+        </li>
+    </ul>
+
+
+
+    <h3>Converting UTF-32 to UTF-16</h3>
+
+    <p>
+        If the code point's value is in the BMP (less than 65,536 (0x10000))
+        it simply gets converted to an unsigned 16-bit integer with the same value as that code point.
+        <br>
+        However, if it isn't in the BMP (greater or equal to 65,536 (0x10000)):
+    </p>
+
+    <ul>
+        <li>0x10000 is subtracted from the code point, leaving a 20-bit number in the hexadecimal number range 0x00000 to 0xFFFFF.</li>
+        <li>
+            The high ten bits (value ranging from 0x000 to 0x3FF) are added to 0xD800
+            to get the first 16-bit code unit (high surrogate), which will be in the range 0xD800 to 0xDBFF.
+        </li>
+        <li>
+            The low ten bits (value also ranging from 0x000 to 0x3FF) are added to 0xDC00
+            to get the second 16-bit code unit (low surrogate), which will be in the range 0xDC00 to 0xDFFF.
+        </li>
+    </ul>
+
+    <p>A visual illustration of this looks like:</p>
+
+    <ul>
+        <li>Subtraction result = code point - 0x10000 = yyyyyyyyyyxxxxxxxxxx</li>
+        <li>High surrogate = 0xD800 + yyyyyyyyyy = 110110yyyyyyyyyy</li>
+        <li>Low surrogate = 0xDC00 + xxxxxxxxxx = 110111xxxxxxxxxx</li>
+    </ul>
+
+    <pre><code class="language-c">
+#include &lt;stdio.h&gt;
+#include &lt;stdint.h&gt;
+
+uint8_t utf32ToUtf16(uint32_t codePoint, uint16_t output[2])
+{
+    if (codePoint &lt; 0x10000)
+    {
+        output[0] = (uint16_t) codePoint;
+        return 1;
+    }
+    else if (codePoint &lt;= 0x10FFFF)
+    {
+        codePoint -= 0x10000;
+        output[0] = 0xD800 + (codePoint >> 10); // High surrogate
+        output[1] = 0xDC00 + (codePoint & 0b1111111111); // Low surrogate
+        return 2;
+    }
+    else return UINT8_MAX; // We will consider the return value "UINT8_MAX" (255) to mean "invalid"
+}
+
+int main()
+{
+    uint16_t output[2] = {0};
+    uint8_t codeUnitCount = utf32ToUtf16(0x10001, output); // The character U+10001 is "Linear B Syllable B038 E" "𐀁"
+
+    printf("Amount of code units: %d\n", codeUnitCount);
+
+    printf("Code units:\n");
+    for (uint8_t i = 0; i &lt; codeUnitCount; i++)
+        printf("%X\n", output[i]);
+    
+    return 0;
+}
+    </code></pre>
+
+    <p>
+        The output is [D800, DC01].
+        In binary [<span class="lightBlueUnderline">110110</span>0000000000, <span class="lightBlueUnderline">110111</span>0000000001]
+    </p>
+
+
+    <h3>Converting UTF-16 to UTF-32</h3>
+
+    <p>
+        In the code below, if there is one unit (BMP code point) we convert it to an unsigned 32-bit integer.
+        <br>
+        If there is a pair of surrogate units, we remove extra bits from both surrogates, cast them to an unsigned 32-bit integer,
+        bitshift the result of calculations of the high surrogate to the left by ten, and finally we add the results together
+        with the 0x10000 we subtracted when encoding the code point in UTF-16.
+    </p>
+
+    <pre><code class="language-c">
+#include &lt;stdio.h&gt;
+#include &lt;stdint.h&gt;
+        
+uint32_t utf16ToUtf32(const uint16_t utf16Char[2])
+{
+    // High surrogate
+    if (utf16Char[0] >= 0xD800 && utf16Char[0] &lt;= 0xDBFF)
+    {
+        if (utf16Char[1] &lt; 0xDC00 || utf16Char[1] > 0xDFFF) // The next unit is a low surrogate
+            return UINT32_MAX; // We will consider the return value "UINT32_MAX" (0xFFFFFFFF) to mean "invalid"
+
+        return ( ((uint32_t)(utf16Char[0] & 0b1111111111)) &lt;&lt; 10 ) + (uint32_t)(utf16Char[1] & 0b1111111111) + 0x10000U;
+    }
+    // The unit isn't a low surrogate, and is in the BMP
+    else if ((utf16Char[0] &lt; 0xDC00 || utf16Char[0] > 0xDFFF) && utf16Char[0] &lt; 0x10000)
+    {
+        return (uint32_t) utf16Char[0];
+    }
+    else return UINT32_MAX;
+}
+
+int main()
+{
+    uint16_t codeUnits[2] = {0xD802, 0xDD07}; // The character (U+10907) is "Phoenician Letter Het" "𐤇"
+    printf("%X\n", utf16ToUtf32(codeUnits));
+    return 0;
+}
+    </code></pre>
+
+    <p>The output is 0x10907.</p>
+
+
+
+    <h3>Converting UTF-8 to UTF-16</h3>
+
+    <p>
+        Code points in the BMP are encoded in one, two, or three code units in UTF-8, and in one code unit in UTF-16.
+        <br>
+        In the code below, if the code point is in the BMP, we just mix the UTF-8 code units to a single UTF-16 unit.
+        <br>
+        If the code point is outside the BMP, we create a UTF-32 code unit from the UTF-8 units, and subtract it by 0x10000.
+        After that we convert the result to a UTF-16 unit pair.
+    </p>
+
+    <pre><code class="language-c">
+#include &lt;stdio.h&gt;
+#include &lt;stdint.h&gt;
+
+uint8_t utf8ToUtf16(const uint8_t utf8Char[4], uint16_t output[2])
+{
+    if ((utf8Char[0] & 0b10000000) == 0b0) // One code unit
+    {
+        output[0] = (uint16_t) utf8Char[0];
+        return 1;
+    }
+    else if ((utf8Char[0] & 0b11100000) == 0b11000000) // Two code units
+    {
+        if (utf8Char[1] == '\0') return UINT8_MAX; // We will consider the return value "UINT8_MAX" (255) to mean "invalid"
+
+        output[0] = ((uint16_t)(utf8Char[0] & 0b00011111) &lt;&lt; 6) +
+                (uint16_t)(utf8Char[1] & 0b00111111);
+        return 1;
+    }
+    else if ((utf8Char[0] & 0b11110000) == 0b11100000) // Three code units
+    {
+        if (utf8Char[1] == '\0' || utf8Char[2] == '\0') return UINT8_MAX;
+        
+        output[0] = ((uint16_t)(utf8Char[0] & 0b00001111) &lt;&lt; 12) +
+                ((uint16_t)(utf8Char[1] & 0b00111111) &lt;&lt; 6) +
+                (uint16_t)(utf8Char[2] & 0b00111111);
+        return 1;
+    }
+    else if ((utf8Char[0] & 0b11111000) == 0b11110000) // Four code units
+    {
+        if (utf8Char[1] == '\0' || utf8Char[2] == '\0' || utf8Char[3] == '\0') return UINT8_MAX;
+
+        uint32_t result = ((uint32_t)(utf8Char[0] & 0b00000111) &lt;&lt; 18) +
+                            ((uint32_t)(utf8Char[1] & 0b00111111) &lt;&lt; 12) +
+                            ((uint32_t)(utf8Char[2] & 0b00111111) &lt;&lt; 6) +
+                            (uint32_t)(utf8Char[3] & 0b00111111)
+                            - 0x10000;
+        output[0] = 0xD800 + (result >> 10); // High surrogate
+        output[1] = 0xDC00 + (result & 0b1111111111); // Low surrogate
+        return 2;
+    }
+}
+
+int main()
+{
+    uint8_t codeUnits[5] = {0xF0, 0x90, 0xA4, 0x87, '\0'}; // The character (U+10907) is "Phoenician Letter Het" "𐤇"
+    uint16_t output[2] = {0};
+    
+    uint8_t codeUnitCount = utf8ToUtf16(codeUnits, output);
+    printf("Amount of code units: %d\n", codeUnitCount);
+
+    printf("Code units:\n");
+    for (uint8_t i = 0; i &lt; codeUnitCount; i++)
+        printf("%X\n", output[i]);
+    
+    return 0;
+}
+    </code></pre>
+
+    <p>The output is [D802, DD07].</p>
+
+
+
+    <h3>Converting UTF-16 to UTF-8</h3>
+
+    <p>
+        Converting UTF-16 to UTF-8 is almost the same as converting UTF-32 to UTF-8:
+    </p>
+
+    <pre><code class="language-c">
+#include &lt;stdio.h&gt;
+#include &lt;stdint.h&gt;
+
+uint8_t utf16ToUtf8(uint16_t utf16Char[2], uint8_t output[5])
+{
+    // High surrogate
+    if (utf16Char[0] >= 0xD800 && utf16Char[0] &lt;= 0xDBFF)
+    {
+        if (utf16Char[1] &lt; 0xDC00 || utf16Char[1] > 0xDFFF) // The next unit is a low surrogate
+            return UINT8_MAX; // We will consider the return value "UINT8_MAX" (255) to mean "invalid"
+
+        uint32_t result = ( ((uint32_t)(utf16Char[0] & 0b1111111111)) &lt;&lt; 10 ) + (uint32_t)(utf16Char[1] & 0b1111111111) + 0x10000U;
+        output[0] = (uint8_t) (((result >> 18) & 0b00000111) | 0b11110000);
+        output[1] = (uint8_t) (((result >> 12) & 0b00111111) | 0b10000000);
+        output[2] = (uint8_t) (((result >> 6) & 0b00111111) | 0b10000000);
+        output[3] = (uint8_t) ((result & 0b00111111) | 0b10000000);
+        output[4] = '\0';
+        return 4;
+    }
+    // The unit isn't a low surrogate, and is in the BMP
+    else if ((utf16Char[0] &lt; 0xDC00 || utf16Char[0] > 0xDFFF) && utf16Char[0] &lt; 0x10000)
+    {
+        if (utf16Char[0] &lt;= 0x007F) // Fits into one UTF8 code unit (ASCII)
+        {
+            output[0] = (uint8_t) utf16Char[0];
+            output[1] = '\0';
+            return 1;
+        }
+        else if (utf16Char[0] &lt;= 0x07FF) // Fits into two UTF8 code units
+        {
+            output[0] = (uint8_t) (((utf16Char[0] >> 6) & 0b0011111) | 0b11000000);
+            output[1] = (uint8_t) ((utf16Char[0] & 0b0111111) | 0b10000000);
+            output[2] = '\0';
+            return 2;
+        }
+        else if (utf16Char[0] &lt;= 0xFFFF) // Fits into three UTF8 code units
+        {
+            output[0] = (uint8_t) (((utf16Char[0] >> 12) & 0b00001111) | 0b11100000);
+            output[1] = (uint8_t) (((utf16Char[0] >> 6) & 0b00111111) | 0b10000000);
+            output[2] = (uint8_t) ((utf16Char[0] & 0b00111111) | 0b10000000);
+            output[3] = '\0';
+            return 3;
+        }
+    }
+    else
+    {
+        output[0] = '\0';
+        return UINT8_MAX;
+    }
+}
+
+int main()
+{
+    uint16_t codeUnits[2] = {0xD801, 0xDE43}; // The character (U+10643) is "Linear A Sign Ab082" "𐙃"
+    uint8_t output[5] = {0};
+    
+    uint8_t codeUnitCount = utf16ToUtf8(codeUnits, output);
+    printf("Amount of code units: %d\n", codeUnitCount);
+
+    printf("Code units:\n");
+    for (uint8_t i = 0; i &lt; codeUnitCount; i++)
+        printf("%X\n", output[i]);
+    
+    return 0;
+}    
+    </code></pre>
+
+    <p>The output is [0xF0, 0x90, 0x99, 0x83]</p>
+
+    
+
+
+
+    <h2 id="sources">
+        Sources
+        <button class="h2btn" onclick="copyURL('sources')">#</button>
+    </h2>
+    
+    <ul>
+        <li><a target=”_blank” href="https://wikipedia.org/wiki/Unicode">Wikipedia: Unicode</a></li>
+        <li><a target=”_blank” href="https://wikipedia.org/wiki/Script_(Unicode)">Wikipedia: Scripts (Unicode)</a></li>
+        <br>
+        <li><a target=”_blank” href="https://wikipedia.org/wiki/Character_encoding">Wikipedia: Character encoding</a></li>
+        <li><a target=”_blank” href="https://wikipedia.org/wiki/Plane_(Unicode)">Wikipedia: Plane (Unicode)</a></li>
+        <li><a target=”_blank” href="https://wikipedia.org/wiki/Unicode_block">Wikipedia: Unicode block</a></li>
+        <br>
+        <li><a target=”_blank” href="https://wikipedia.org/wiki/Private_Use_Areas">Wikipedia: Private use areas</a></li>
+        <li><a target=”_blank” href="https://wikipedia.org/wiki/Specials_(Unicode_block)">Wikipedia: Specials (Unicode block)</a></li>
+        <li><a target=”_blank” href="https://wikipedia.org/wiki/Variation_Selectors_(Unicode_block)">Wikipedia: Variation Selectors (Unicode block)</a></li>
+        <li><a target=”_blank” href="https://wikipedia.org/wiki/Variation_Selectors_Supplement">Wikipedia: Variation Selectors Supplement</a></li>
+        <br>
+        <li><a target=”_blank” href="https://wikipedia.org/wiki/UTF-32">Wikipedia: UTF-32</a></li>
+        <li><a target=”_blank” href="https://wikipedia.org/wiki/UTF-16">Wikipedia: UTF-16</a></li>
+        <li><a target=”_blank” href="https://wikipedia.org/wiki/UTF-8">Wikipedia: UTF-8</a></li>
+        <br>
+        <li><a target=”_blank” href="https://wikipedia.org/wiki/Byte_order_mark">Wikipedia: Byte order mark</a></li>
+        <li><a target=”_blank” href="https://wikipedia.org/wiki/Word_joiner">Wikipedia: Word joiner</a></li>
+        <li><a target=”_blank” href="https://wikipedia.org/wiki/Zero-width_joiner">Wikipedia: Zero-width joiner</a></li>
+        <li><a target=”_blank” href="https://wikipedia.org/wiki/Zero-width_non-joiner">Wikipedia: Zero-width non-joiner</a></li>
+        <li><a target=”_blank” href="https://wikipedia.org/wiki/Zero-width_space">Wikipedia: Zero-width space</a></li>
+        <li><a target=”_blank” href="https://wikipedia.org/wiki/Non-breaking_space">Wikipedia: Non-breaking space</a></li>
+        <li><a target=”_blank” href="https://wikipedia.org/wiki/Combining_character">Wikipedia: Combining character</a></li>
+        <li><a target=”_blank” href="https://wikipedia.org/wiki/Combining_grapheme_joiner">Wikipedia: Combining grapheme joiner</a></li>
+        <li><a target=”_blank” href="https://wikipedia.org/wiki/Dotted_circle">Wikipedia: Dotted circle</a></li>
+        <li><a target=”_blank” href="https://unicode.org/Public/UNIDATA/NamedSequences.txt">Unicode: Named Sequences</a></li>
+        <li><a target=”_blank” href="https://wikipedia.org/wiki/List_of_emojis">Wikipedia: List of emojis</a></li>
+        <li><a target=”_blank” href="https://wikipedia.org/wiki/Regional_indicator_symbol">Wikipedia: Regional indicator symbol</a></li>
+        <li><a target=”_blank” href="https://unicode.org/emoji/charts/emoji-sequences.html">Unicode: Emoji Sequences</a></li>
+        <li><a target=”_blank” href="https://unicode.org/emoji/charts/emoji-zwj-sequences.html">Unicode: ZWJ emoji Sequences</a></li>
+        <li><a target=”_blank” href="https://unicode.org/emoji/charts/emoji-list.html">Unicode: Emoji List</a></li>
+        <li><a target=”_blank” href="https://wikipedia.org/wiki/Emoticons_(Unicode_block)">Wikipedia: Emoticons (Unicode block)</a></li>
+        <li><a target=”_blank” href="https://wikipedia.org/wiki/Noncharacter">Wikipedia: Noncharacter</a></li>
+        <li><a target=”_blank” href="https://wikipedia.org/wiki/Whitespace_character">Wikipedia: Whitespace character</a></li>
+        <br>
+        <li><a target=”_blank” href="https://wikipedia.org/wiki/Unicode_character_property">Wikipedia: Unicode character property</a></li>
+        <br>
+        <li><a target=”_blank” href="https://wikipedia.org/wiki/Bidirectional_text">Wikipedia: Bidirectional text</a></li>
+        <br>
+        <li><a target=”_blank” href="https://wikipedia.org/wiki/Unicode_collation_algorithm">Wikipedia: Unicode collation algorithm</a></li>
+        <br>
+        <li><a target=”_blank” href="https://wikipedia.org/wiki/Unicode_equivalence">Wikipedia: Unicode equivalence</a></li>
+    </ul>
+
+
+
+
+    
+    <h2 id="bottom">
+        Top
+        <button class="h2btn" onclick="copyURL('')">#</button>
+    </h2>
+
+    <p><a href="#">Go back to the top</a></p>
+
+
+
+
+
+    <footer style="text-align: center;"><p>Time of compilation: October-November, 2024</p></footer>
+
+
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="main.js"></script>
+
+    <script>
+        hljs.highlightAll();
+        overrideHLJS();
+    </script>
+</body>
+</html>

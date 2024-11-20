@@ -1,0 +1,79 @@
+body
+{
+    background-color: rgb(50, 56, 63);
+    color: gainsboro;
+    font-family: monospace;
+}
+
+h1
+{ color: rgb(146, 30, 255); }
+h2
+{ color: rgb(197, 107, 188); }
+h3
+{
+    color: rgb(58, 212, 179);
+    font-size: large;
+}
+
+a, th
+{ color: aqua; }
+p, li, code
+{ font-size: large; }
+a
+{ text-decoration: none; }
+
+table {
+    border:1px solid aqua;
+    border-spacing: 5px;
+    border-radius: 5px;
+}
+th, td
+{
+    border:1px solid gainsboro;
+    font-size: larger;
+    padding-inline: 5px;
+    padding-block: 2px;
+}
+
+h2
+{
+    display: inline-block;
+    margin-top: 12px;
+    margin-bottom: 4px;
+}
+.h2btn
+{
+    margin-left: 10px;
+    float: right;
+    background-color: rgb(197, 107, 188);
+    color: rgb(47, 47, 47);
+    border: 0px;
+    border-radius: 7px;
+    font-size: small;
+    font-weight: bold;
+    font-family: fantasy;
+    cursor: copy;
+}
+.h2btn:active
+{
+    background-color: rgb(161, 95, 155);
+}
+h1
+{ margin-bottom: 10px; }
+
+.lightBlueUnderline
+{
+    text-decoration: underline;
+    text-decoration-color: rgb(24, 159, 255);
+}
+
+@media only screen and (max-device-width : 600px)
+{
+h3,
+p, li, code
+{ font-size: medium; }
+th, td
+{ font-size: large; }
+.h2btn
+{ font-size: smaller; }
+}
