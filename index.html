@@ -13,9 +13,9 @@
 <body>
     <h1>A Summary of Unicode</h1>
 
-    <h2>
+    <h2 id="index">
         Index
-        <button class="h2btn" onclick="copyURL('')">#</button>
+        <button class="h2btn" onclick="copyURL('index')">#</button>
     </h2>
 
     <ul>
@@ -2481,17 +2481,17 @@
 
     <pre><code class="language-c">
 #include &lt;stdio.h&gt;
-#include &lt;fcntl.h&gt; //The "_O_U16TEXT" macro is here
+#include &lt;fcntl.h&gt; // The "_O_U16TEXT" macro is here
 
 int main()
 {
     _setmode(1, _O_U16TEXT);
-    wprintf(L"Hello مرحباً\n"); //A string prefixed with the letter "L" is a wide string
+    wprintf(L"Hello مرحباً\n"); // A string prefixed with the letter "L" is a wide string
     return 0;
 }            
     </code></pre>
 
-    <p>Please note that the arabic text will be printed in a left-to-right direction without forming ligatures.</p>
+    <p>(The arabic text might be printed in a left-to-right direction without forming ligatures).</p>
 
 
 
@@ -2643,7 +2643,7 @@ int main()
         </li>
     </ul>
 
-    <p>Please note that the code blocks are basic examples, they aren't perfect and they don't check for common errors.</p>
+    <p>Please note that the code blocks contain basic examples, they aren't perfect and they don't check for common errors.</p>
 
 
 
@@ -3088,12 +3088,6 @@ int main()
     </h2>
 
     <p><a href="#">Go back to the top</a></p>
-
-
-
-
-
-    <footer style="text-align: center;"><p>Time of compilation: October-November, 2024</p></footer>
 
 
 
